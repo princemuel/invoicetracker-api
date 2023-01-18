@@ -6,7 +6,7 @@ import {
   getRefreshCookie,
   hashPassword,
   removeRefreshCookie,
-} from 'src/utils';
+} from '../../../utils';
 import { LoginInput, RegisterInput } from '../input';
 import { AuthPayload, User } from '../model';
 
