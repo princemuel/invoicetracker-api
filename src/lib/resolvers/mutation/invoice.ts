@@ -5,7 +5,7 @@ import {
   CreateInvoiceInput,
   ItemWhereUniqueInput,
   UpdateInvoiceInput,
-} from '../input/invoice';
+} from '../input';
 
 const suid = new ShortUniqueId({
   dictionary: 'hex',

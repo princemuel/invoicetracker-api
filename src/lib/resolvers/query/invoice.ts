@@ -1,5 +1,5 @@
 import { list, nonNull, nullable, queryField } from 'nexus';
-import { ItemWhereUniqueInput } from '../input/invoice';
+import { ItemWhereUniqueInput } from '../input';
 
 export const invoices = queryField('invoices', {
   type: nonNull(list(nonNull('Invoice'))),

@@ -6,9 +6,9 @@ import {
   getRefreshCookie,
   hashPassword,
   removeRefreshCookie,
-} from '../../utils';
-import { AuthPayload, User } from './model/user';
-import { LoginInput, RegisterInput } from './user.input';
+} from 'src/utils';
+import { LoginInput, RegisterInput } from '../input';
+import { AuthPayload, User } from '../model';
 
 export const register = mutationField('register', {
   type: nonNull(AuthPayload),
