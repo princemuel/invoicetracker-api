@@ -6,9 +6,9 @@ import {
   getRefreshCookie,
   hashPassword,
   removeRefreshCookie,
-} from '../../../utils';
+} from '../../utils';
 import { LoginInput, RegisterInput } from '../input';
-import { AuthPayload, User } from '../model';
+import { AuthPayload, LogoutPayload } from '../model';
 
 export const register = mutationField('register', {
   type: nonNull(AuthPayload),
@@ -44,7 +44,7 @@ export const login = mutationField('login', {
       },
     });
 
-    let message = 'Invalid user credentials';
+    let message = 'Invalid user: user credentials do not match';
 
     const matches = await comparePassword(args.input.password, user.password);
     if (!matches)
@@ -56,7 +56,6 @@ export const login = mutationField('login', {
 
     const { accessToken } = await createTokens({ sub: user.id }, ctx);
     return {
-      // ! maybe return only the access token?
       user,
       accessToken,
     };
@@ -64,7 +63,7 @@ export const login = mutationField('login', {
 });
 
 export const refreshAuth = mutationField('refreshAuth', {
-  type: nonNull(AuthPayload),
+  type: AuthPayload,
   resolve: async (_root, _args, ctx) => {
     const decoded = getRefreshCookie(ctx);
     const user = await ctx.db.user.findFirstOrThrow({
@@ -75,14 +74,13 @@ export const refreshAuth = mutationField('refreshAuth', {
 
     const { accessToken } = await createTokens({ sub: user.id }, ctx);
     return {
-      user,
       accessToken,
     };
   },
 });
 
 export const logout = mutationField('logout', {
-  type: nonNull(User),
+  type: nonNull(LogoutPayload),
   resolve: async (_root, _args, ctx) => {
     let message = 'Invalid logout cookie. Could not find the access token';
 
@@ -95,10 +93,8 @@ export const logout = mutationField('logout', {
       });
 
     removeRefreshCookie(ctx);
-    return await ctx.db.user.findFirstOrThrow({
-      where: {
-        id: decoded.sub,
-      },
-    });
+    return {
+      message: 'Application logout successful',
+    };
   },
 });
