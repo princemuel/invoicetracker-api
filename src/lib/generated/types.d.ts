@@ -114,7 +114,7 @@ export interface NexusGenObjects {
   }
   AuthPayload: { // root type
     accessToken: string; // String!
-    user: NexusGenRootTypes['User']; // User!
+    user?: NexusGenRootTypes['User'] | null; // User
   }
   Invoice: { // root type
     clientAddress?: NexusGenRootTypes['Address'] | null; // Address
@@ -138,6 +138,9 @@ export interface NexusGenObjects {
     price?: number | null; // Float
     quantity?: number | null; // Int
     total?: number | null; // Float
+  }
+  LogoutPayload: { // root type
+    message: string; // String!
   }
   Mutation: {};
   Query: {};
@@ -172,7 +175,7 @@ export interface NexusGenFieldTypes {
   }
   AuthPayload: { // field return type
     accessToken: string; // String!
-    user: NexusGenRootTypes['User']; // User!
+    user: NexusGenRootTypes['User'] | null; // User
   }
   Invoice: { // field return type
     clientAddress: NexusGenRootTypes['Address'] | null; // Address
@@ -199,12 +202,15 @@ export interface NexusGenFieldTypes {
     quantity: number | null; // Int
     total: number | null; // Float
   }
+  LogoutPayload: { // field return type
+    message: string; // String!
+  }
   Mutation: { // field return type
     createInvoice: NexusGenRootTypes['Invoice'] | null; // Invoice
     deleteInvoice: NexusGenRootTypes['Invoice'] | null; // Invoice
     login: NexusGenRootTypes['AuthPayload']; // AuthPayload!
-    logout: NexusGenRootTypes['User']; // User!
-    refreshAuth: NexusGenRootTypes['AuthPayload']; // AuthPayload!
+    logout: NexusGenRootTypes['LogoutPayload']; // LogoutPayload!
+    refreshAuth: NexusGenRootTypes['AuthPayload'] | null; // AuthPayload
     register: NexusGenRootTypes['AuthPayload']; // AuthPayload!
     updateInvoice: NexusGenRootTypes['Invoice'] | null; // Invoice
   }
@@ -260,11 +266,14 @@ export interface NexusGenFieldTypeNames {
     quantity: 'Int'
     total: 'Float'
   }
+  LogoutPayload: { // field return type name
+    message: 'String'
+  }
   Mutation: { // field return type name
     createInvoice: 'Invoice'
     deleteInvoice: 'Invoice'
     login: 'AuthPayload'
-    logout: 'User'
+    logout: 'LogoutPayload'
     refreshAuth: 'AuthPayload'
     register: 'AuthPayload'
     updateInvoice: 'Invoice'

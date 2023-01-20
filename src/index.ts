@@ -1,3 +1,4 @@
+require('dotenv').config();
 import { ApolloServer } from '@apollo/server';
 import { ApolloServerErrorCode } from '@apollo/server/errors';
 import { expressMiddleware } from '@apollo/server/express4';
@@ -6,17 +7,15 @@ import {
   ApolloServerPluginLandingPageLocalDefault,
   ApolloServerPluginLandingPageProductionDefault,
 } from '@apollo/server/plugin/landingPage/default';
-import { ApolloServerPluginUsageReporting } from '@apollo/server/plugin/usageReporting';
+// import { ApolloServerPluginUsageReporting } from '@apollo/server/plugin/usageReporting';
 import { json } from 'body-parser';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import express from 'express';
 import http from 'http';
+import { corsOptions } from './config';
 import { createContext, schema } from './lib';
 
-const IS_DEV = process.env.NODE_ENV === 'development';
-const localOrigin = [/^http:\/\/localhost:\d{4}$/];
-const prodOrigin = [/^https:\/\/.*\.yourdomain\.com$/];
 const PORT = process.env.PORT || 4000;
 
 async function startApolloServer() {
@@ -26,11 +25,11 @@ async function startApolloServer() {
     schema,
     plugins: [
       ApolloServerPluginDrainHttpServer({ httpServer }),
-      ApolloServerPluginUsageReporting({
-        // If you pass unmodified: true to the usage reporting
-        // plugin, Apollo Studio receives ALL error details
-        sendErrors: { unmodified: true },
-      }),
+      // ApolloServerPluginUsageReporting({
+      //   // If you pass unmodified: true to the usage reporting
+      //   // plugin, Apollo Studio receives ALL error details
+      //   sendErrors: { unmodified: true },
+      // }),
       // Install a landing page plugin based on NODE_ENV
       process.env.NODE_ENV === 'production'
         ? ApolloServerPluginLandingPageProductionDefault({
@@ -65,10 +64,7 @@ async function startApolloServer() {
 
   app.use(
     '/graphql',
-    cors<cors.CorsRequest>({
-      origin: IS_DEV ? localOrigin : prodOrigin,
-      credentials: true,
-    }),
+    cors<cors.CorsRequest>(corsOptions),
     json(),
     cookieParser(),
     expressMiddleware(server, {
