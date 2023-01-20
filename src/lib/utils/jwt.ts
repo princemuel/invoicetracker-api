@@ -2,12 +2,11 @@ import * as bcrypt from 'bcrypt';
 import jwt, { SignOptions } from 'jsonwebtoken';
 import { JwtPayload } from './auth';
 import { constants } from './environment';
-import { toBase64, toUtf8 } from './parsers';
 
 type Key = 'AT' | 'RT';
 
 const jwtOptions = {
-  issuer: 'invoicemailer',
+  issuer: 'Invoice Mailer',
   audience: 'https://invoicemailer.onrender.com',
 };
 /**
@@ -22,14 +21,16 @@ export const signJwt = (
   key: Key,
   options?: SignOptions
 ) => {
-  const accessToken = toBase64(constants.JWT_ACCESS_SECRET);
-  const refreshToken = toBase64(constants.JWT_REFRESH_SECRET);
-  const secret = key === 'AT' ? toUtf8(accessToken) : toUtf8(refreshToken);
+  const accessToken = constants.JWT_ACCESS_SECRET;
+  const refreshToken = constants.JWT_REFRESH_SECRET;
+
+  const secret = key === 'AT' ? accessToken : refreshToken;
 
   return jwt.sign(payload, secret, {
     ...(options ?? {}),
     ...jwtOptions,
     algorithm: 'RS256',
+    allowInsecureKeySizes: true,
   });
 };
 
@@ -40,9 +41,10 @@ export const signJwt = (
  * @returns JwtPayload | null
  */
 export const verifyJwt = (token: string, key: Key) => {
-  const accessToken = toBase64(constants.JWT_ACCESS_PUBLIC);
-  const refreshToken = toBase64(constants.JWT_REFRESH_PUBLIC);
-  const secret = key === 'AT' ? toUtf8(accessToken) : toUtf8(refreshToken);
+  const accessToken = constants.JWT_ACCESS_SECRET;
+  const refreshToken = constants.JWT_REFRESH_SECRET;
+
+  const secret = key === 'AT' ? accessToken : refreshToken;
 
   try {
     return jwt.verify(token, secret, {

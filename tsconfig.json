@@ -14,7 +14,7 @@
     "incremental": true,
     "noErrorTruncation": true,
     "baseUrl": ".",
-    "rootDir": "./src",
+    "rootDir": ".",
     "outDir": "dist"
   },
   "include": ["**/*.ts"],
