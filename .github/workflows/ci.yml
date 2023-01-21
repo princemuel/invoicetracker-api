@@ -1,32 +1,23 @@
-name: CI
+name: Continuous Integration
 
 on:
   push:
-    branches: [dev]
-  pull_request:
     branches: [dev]
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    container:
-      pandoc/latex # "ubuntu" is a more generic container
-      # using "pandoc/latex" because of dependencies
-      # used in the specific "build.sh"
     steps:
-     - uses: actions/checkout@v2
-      - name: creates output
-        run:  'yarn run postinstall'
-      - name: Pushes to another repository
-        uses: cpina/github-action-push-to-another-repository@main
+      - name: Push generated webpage to another repository
+        uses: nkoppel/push-files-to-another-repository@1.1.0
         env:
           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
         with:
-          source-directory: 'generated'
-          target-directory: 'generated'
-          destination-github-username: 'princemuel'
-          destination-repository-name: 'invoice-web-app'
-          user-email: vansomecsam@gmail.com
-          user-name: princemuel
-          target-branch: dev
+          source-files: 'generated'
+          destination-username: 'princemuel'
+          destination-repository: 'invoice-web-app'
+          destination-branch: 'dev'
+          destination-directory: 'generated'
+          commit-username: princemuel
+          commit-email: vansomecsam@gmail.com
           commit-message: 'docs: update types and schema for graphql'
