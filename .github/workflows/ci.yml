@@ -26,4 +26,4 @@ jobs:
           user-email: vansomecsam@gmail.com
           user-name: princemuel
           target-branch: dev
-          commit_message: 'docs: update types and schema for graphql'
+          commit-message: 'docs: update types and schema for graphql'
