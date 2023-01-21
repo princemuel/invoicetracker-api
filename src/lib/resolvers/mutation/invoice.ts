@@ -1,11 +1,6 @@
 import produce from 'immer';
 import { mutationField, nullable } from 'nexus';
 import ShortUniqueId from 'short-unique-id';
-import {
-  CreateInvoiceInput,
-  ItemWhereUniqueInput,
-  UpdateInvoiceInput,
-} from '../input';
 
 const suid = new ShortUniqueId({
   dictionary: 'hex',
@@ -13,7 +8,7 @@ const suid = new ShortUniqueId({
 
 export const createInvoice = mutationField('createInvoice', {
   type: nullable('Invoice'),
-  args: { input: CreateInvoiceInput },
+  args: { input: 'CreateInvoiceInput' },
   resolve: async (_root, args, ctx) => {
     const nextState = produce(args.input, (draft) => {
       const dueTime = 86400 * 1000 * Number(draft?.paymentTerms || 1);
@@ -34,8 +29,8 @@ export const createInvoice = mutationField('createInvoice', {
 export const updateInvoice = mutationField('updateInvoice', {
   type: 'Invoice',
   args: {
-    input: UpdateInvoiceInput,
-    where: ItemWhereUniqueInput,
+    input: 'UpdateInvoiceInput',
+    where: 'ItemWhereUniqueInput',
   },
   resolve: async (_root, args, ctx) => {
     return ctx.db.invoice.update({
@@ -50,7 +45,7 @@ export const updateInvoice = mutationField('updateInvoice', {
 export const deleteInvoice = mutationField('deleteInvoice', {
   type: 'Invoice',
   args: {
-    where: ItemWhereUniqueInput,
+    where: 'ItemWhereUniqueInput',
   },
   resolve: async (_root, args, ctx) => {
     return ctx.db.invoice.delete({
