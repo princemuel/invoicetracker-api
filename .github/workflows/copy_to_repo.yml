@@ -15,7 +15,7 @@ jobs:
           API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
         with:
           source_file: './src/lib/generated/'
-          destination_repo: 'princemuel/invoice-web-app'
+          destination_repo: 'git@github.com:princemuel/invoice-web-app.git'
           destination_branch: 'dev'
           destination_folder: '/'
           user_email: 'vansomecsam@gmail.com'
