@@ -4,7 +4,7 @@
  */
 
 
-import type { Context } from "./../context"
+import type { Context } from "./../src/lib/context"
 import type { core, connectionPluginCore } from "nexus"
 declare global {
   interface NexusGenCustomInputMethods<TypeName extends string> {
