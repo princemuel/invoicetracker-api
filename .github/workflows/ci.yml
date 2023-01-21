@@ -19,8 +19,8 @@ jobs:
         env:
           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
         with:
-          source-directory: 'src/lib/generated/'
-          target-directory: 'lib/generated/'
+          source-directory: 'src/lib/generated'
+          target-directory: 'lib/generated'
           destination-github-username: 'princemuel'
           destination-repository-name: 'invoice-web-app'
           user-email: vansomecsam@gmail.com
