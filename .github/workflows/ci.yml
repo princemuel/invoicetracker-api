@@ -14,19 +14,16 @@ jobs:
       # using "pandoc/latex" because of dependencies
       # used in the specific "build.sh"
     steps:
-      - uses: actions/checkout@v2
-      - name: creates output
-        run:
-          sh ./build.sh # some command from your repository that creates
-          # output to "source-directory" ("output" in the example)
       - name: Pushes to another repository
         uses: cpina/github-action-push-to-another-repository@main
         env:
           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
         with:
           source-directory: 'src/lib/generated/'
+          target-directory: 'lib/generated/'
           destination-github-username: 'princemuel'
           destination-repository-name: 'invoice-web-app'
           user-email: vansomecsam@gmail.com
+          user-name: princemuel
           target-branch: dev
           commit_message: 'docs: update types and schema for graphql'
