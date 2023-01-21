@@ -5,6 +5,7 @@
   "license": "MIT",
   "scripts": {
     "dev": "NODE_ENV=development ts-node-dev -r dotenv/config --no-notify --respawn --transpile-only src",
+    "start": "ts-node -r dotenv/config --transpile-only src",
     "studio": "npx prisma studio",
     "generate": "npm -s run generate:nexus && npm -s run generate:prisma",
     "generate:prisma": "prisma generate",

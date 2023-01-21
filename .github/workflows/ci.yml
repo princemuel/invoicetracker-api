@@ -1,0 +1,23 @@
+name: Continuous Integration
+
+on:
+  push:
+    branches: [dev]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Copy files to another repository
+        uses: nkoppel/push-files-to-another-repository@v1.1.1
+        env:
+          API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
+        with:
+          source-files: 'generated'
+          destination-username: 'princemuel'
+          destination-repository: 'invoice-web-app'
+          destination-branch: 'dev'
+          destination-directory: 'lib/generated'
+          commit-username: princemuel
+          commit-email: vansomecsam@gmail.com
+          commit-message: 'docs: update types and schema for graphql'

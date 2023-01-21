@@ -11,8 +11,8 @@ const baseSchema = makeSchema({
     guardPlugin,
   ],
   outputs: {
-    typegen: path.join(process.cwd(), 'src', 'lib', 'generated', 'types.d.ts'),
-    schema: path.join(process.cwd(), 'src', 'lib', 'generated', 'schema.gql'),
+    typegen: path.join(process.cwd(),'generated', 'types.d.ts'),
+    schema: path.join(process.cwd(), 'generated', 'schema.gql'),
   },
 
   contextType: {
