@@ -17,7 +17,7 @@ jobs:
           destination-username: 'princemuel'
           destination-repository: 'invoice-web-app'
           destination-branch: 'dev'
-          destination-directory: 'generated'
+          destination-directory: 'lib/generated'
           commit-username: princemuel
           commit-email: vansomecsam@gmail.com
           commit-message: 'docs: update types and schema for graphql'
