@@ -14,6 +14,9 @@ jobs:
       # using "pandoc/latex" because of dependencies
       # used in the specific "build.sh"
     steps:
+     - uses: actions/checkout@v2
+      - name: creates output
+        run:  'yarn run postinstall'
       - name: Pushes to another repository
         uses: cpina/github-action-push-to-another-repository@main
         env:
