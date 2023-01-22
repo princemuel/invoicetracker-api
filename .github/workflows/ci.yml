@@ -1,4 +1,4 @@
-name: Continuous Integration
+name: CI
 
 on:
   push:
@@ -8,16 +8,19 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Copy files to another repository
-        uses: nkoppel/push-files-to-another-repository@v1.1.1
+      # - uses: actions/checkout@v2
+      # - name: creates output
+      #   run: 'yarn run postinstall'
+      - name: Pushes to another repository
+        uses: cpina/github-action-push-to-another-repository@main
         env:
-          API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
+          SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
         with:
-          source-files: 'generated'
-          destination-username: 'princemuel'
-          destination-repository: 'invoice-web-app'
-          destination-branch: 'dev'
-          destination-directory: 'lib/generated'
-          commit-username: princemuel
-          commit-email: vansomecsam@gmail.com
+          source-directory: 'generated'
+          target-directory: 'lib/generated'
+          destination-github-username: 'princemuel'
+          destination-repository-name: 'invoice-web-app'
+          user-email: vansomecsam@gmail.com
+          user-name: princemuel
+          target-branch: dev
           commit-message: 'docs: update types and schema for graphql'
