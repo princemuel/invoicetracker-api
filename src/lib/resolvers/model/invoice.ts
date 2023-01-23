@@ -65,11 +65,10 @@ export const Invoice = objectType({
     t.nonNull.field('user', {
       type: 'User',
       resolve: async (root, _args, ctx) => {
-        return ctx.db.user.findUnique({
+        return ctx.db.user.findUniqueOrThrow({
           where: {
             id: root.userId as string,
           },
-          rejectOnNotFound: true,
         });
       },
     });

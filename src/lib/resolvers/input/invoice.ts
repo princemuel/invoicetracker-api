@@ -3,6 +3,7 @@ import { inputObjectType } from 'nexus';
 export const CreateInvoiceInput = inputObjectType({
   name: 'CreateInvoiceInput',
   definition(t) {
+    t.string('userId');
     t.string('description');
     t.string('tag');
     t.field('status', { type: 'Status' });
@@ -22,6 +23,7 @@ export const CreateInvoiceInput = inputObjectType({
 export const UpdateInvoiceInput = inputObjectType({
   name: 'UpdateInvoiceInput',
   definition(t) {
+    t.string('userId');
     t.string('description');
     t.field('status', { type: 'Status' });
     t.int('paymentTerms');
