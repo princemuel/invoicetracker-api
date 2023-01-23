@@ -47,10 +47,10 @@ export const Invoice = objectType({
         'The grand total of the price of the items listed in the invoice',
     });
 
-    t.nonNull.list.field('items', {
+    t.nonNull.list.nonNull.field('items', {
       type: 'InvoiceItem',
       description: 'The items listed in the invoice',
-      resolve: async (root, args, ctx) => {
+      resolve: async (root, _args, ctx) => {
         return ctx.db.invoice
           .findUniqueOrThrow({
             where: {
@@ -61,17 +61,6 @@ export const Invoice = objectType({
           .items();
       },
     });
-
-    t.nonNull.field('user', {
-      type: 'User',
-      resolve: async (root, _args, ctx) => {
-        return ctx.db.user.findUniqueOrThrow({
-          where: {
-            id: root.userId as string,
-          },
-        });
-      },
-    });
   },
 });
 
@@ -80,12 +69,16 @@ export const Address = objectType({
   description:
     "The address object used for both the client and sender's address information. It contains the person's street, city, post code and country data",
   definition(t) {
-    t.string('street', { description: 'The street where the person resides' });
-    t.string('city', { description: 'The city where the person lives in' });
-    t.string('postCode', {
+    t.nonNull.string('street', {
+      description: 'The street where the person resides',
+    });
+    t.nonNull.string('city', {
+      description: 'The city where the person lives in',
+    });
+    t.nonNull.string('postCode', {
       description: "The post code of the person's state",
     });
-    t.string('country', {
+    t.nonNull.string('country', {
       description: 'The country where the person is located',
     });
   },
@@ -95,9 +88,11 @@ export const InvoiceItem = objectType({
   name: 'InvoiceItem',
   description: 'An item listed in the invoice',
   definition(t) {
-    t.id('itemId', { description: 'The id of this item' });
+    t.id('id', { description: 'The id of this item' });
     t.string('name', { description: 'The name of this item' });
-    t.int('quantity', { description: 'The amount of this item purchased' });
+    t.int('quantity', {
+      description: 'The amount of this item purchased',
+    });
     t.float('price', { description: 'The price of this item' });
     t.float('total', {
       description:

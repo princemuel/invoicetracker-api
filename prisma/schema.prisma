@@ -53,7 +53,7 @@ type Address {
 }
 
 type InvoiceItem {
-  itemId   String
+  id       String
   name     String
   quantity Int
   price    Float
