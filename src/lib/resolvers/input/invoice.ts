@@ -4,34 +4,34 @@ export const CreateInvoiceInput = inputObjectType({
   name: 'CreateInvoiceInput',
   definition(t) {
     t.nonNull.id('userId');
-    t.nonNull.string('description');
     t.nonNull.string('tag');
-    t.nonNull.field('status', { type: 'Status' });
-    t.nonNull.int('paymentTerms');
     t.nonNull.string('paymentDue');
+    t.nonNull.int('paymentTerms');
+    t.nonNull.string('description');
     t.nonNull.string('clientName');
     t.nonNull.string('clientEmail');
+    t.nonNull.field('status', { type: 'Status' });
     t.nonNull.field('clientAddress', { type: 'AddressInput' });
     t.nonNull.field('senderAddress', { type: 'AddressInput' });
-    t.nonNull.float('total');
     t.nonNull.list.nonNull.field('items', { type: 'InvoiceItemInput' });
+    t.nonNull.float('total');
   },
 });
 
 export const UpdateInvoiceInput = inputObjectType({
   name: 'UpdateInvoiceInput',
   definition(t) {
-    t.nonNull.id('userId');
-    t.nonNull.string('description');
-    t.nonNull.field('status', { type: 'Status' });
-    t.nonNull.int('paymentTerms');
+    t.nonNull.string('tag');
     t.nonNull.string('paymentDue');
+    t.nonNull.int('paymentTerms');
+    t.nonNull.string('description');
     t.nonNull.string('clientName');
     t.nonNull.string('clientEmail');
+    t.nonNull.field('status', { type: 'Status' });
     t.nonNull.field('clientAddress', { type: 'AddressInput' });
     t.nonNull.field('senderAddress', { type: 'AddressInput' });
-    t.nonNull.float('total');
     t.nonNull.list.nonNull.field('items', { type: 'InvoiceItemInput' });
+    t.nonNull.float('total');
   },
 });
 
