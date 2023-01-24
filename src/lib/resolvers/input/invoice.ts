@@ -52,7 +52,7 @@ export const AddressInput = inputObjectType({
 export const InvoiceItemInput = inputObjectType({
   name: 'InvoiceItemInput',
   definition(t) {
-    t.nonNull.id('id');
+    t.id('id');
     t.nonNull.string('name');
     t.nonNull.int('quantity');
     t.nonNull.float('price');
