@@ -50,16 +50,6 @@ export const Invoice = objectType({
     t.nonNull.list.nonNull.field('items', {
       type: 'InvoiceItem',
       description: 'The items listed in the invoice',
-      resolve: async (root, _args, ctx) => {
-        return ctx.db.invoice
-          .findUniqueOrThrow({
-            where: {
-              // !!! NOTE: make sure to refactor this
-              id: root.id as string,
-            },
-          })
-          .items();
-      },
     });
   },
 });
