@@ -3,35 +3,35 @@ import { inputObjectType } from 'nexus';
 export const CreateInvoiceInput = inputObjectType({
   name: 'CreateInvoiceInput',
   definition(t) {
-    t.string('description');
-    t.string('tag');
-    t.field('status', { type: 'Status' });
-    t.int('paymentTerms');
-    t.string('paymentDue');
-    t.string('clientName');
-    t.string('clientEmail');
-    t.field('clientAddress', { type: AddressInput });
-    t.field('senderAddress', { type: AddressInput });
-    t.float('total');
-    t.list.field('items', {
-      type: InvoiceItemInput,
-    });
+    t.nonNull.id('userId');
+    t.nonNull.string('description');
+    t.nonNull.string('tag');
+    t.nonNull.field('status', { type: 'Status' });
+    t.nonNull.int('paymentTerms');
+    t.nonNull.string('paymentDue');
+    t.nonNull.string('clientName');
+    t.nonNull.string('clientEmail');
+    t.nonNull.field('clientAddress', { type: 'AddressInput' });
+    t.nonNull.field('senderAddress', { type: 'AddressInput' });
+    t.nonNull.float('total');
+    t.nonNull.list.nonNull.field('items', { type: 'InvoiceItemInput' });
   },
 });
 
 export const UpdateInvoiceInput = inputObjectType({
   name: 'UpdateInvoiceInput',
   definition(t) {
-    t.string('description');
-    t.field('status', { type: 'Status' });
-    t.int('paymentTerms');
-    t.string('paymentDue');
-    t.string('clientName');
-    t.string('clientEmail');
-    t.field('clientAddress', { type: AddressInput });
-    t.field('senderAddress', { type: AddressInput });
-    t.float('total');
-    t.list.field('items', { type: InvoiceItemInput });
+    t.nonNull.id('userId');
+    t.nonNull.string('description');
+    t.nonNull.field('status', { type: 'Status' });
+    t.nonNull.int('paymentTerms');
+    t.nonNull.string('paymentDue');
+    t.nonNull.string('clientName');
+    t.nonNull.string('clientEmail');
+    t.nonNull.field('clientAddress', { type: 'AddressInput' });
+    t.nonNull.field('senderAddress', { type: 'AddressInput' });
+    t.nonNull.float('total');
+    t.nonNull.list.nonNull.field('items', { type: 'InvoiceItemInput' });
   },
 });
 
@@ -52,11 +52,11 @@ export const AddressInput = inputObjectType({
 export const InvoiceItemInput = inputObjectType({
   name: 'InvoiceItemInput',
   definition(t) {
-    t.id('itemId');
-    t.string('name');
-    t.int('quantity');
-    t.float('price');
-    t.float('total');
+    t.nonNull.id('id');
+    t.nonNull.string('name');
+    t.nonNull.int('quantity');
+    t.nonNull.float('price');
+    t.nonNull.float('total');
   },
 });
 

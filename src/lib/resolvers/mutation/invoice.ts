@@ -1,5 +1,5 @@
 import produce from 'immer';
-import { mutationField, nullable } from 'nexus';
+import { mutationField, nonNull } from 'nexus';
 import ShortUniqueId from 'short-unique-id';
 
 const suid = new ShortUniqueId({
@@ -7,7 +7,7 @@ const suid = new ShortUniqueId({
 });
 
 export const createInvoice = mutationField('createInvoice', {
-  type: nullable('Invoice'),
+  type: nonNull('Invoice'),
   args: { input: 'CreateInvoiceInput' },
   resolve: async (_root, args, ctx) => {
     const nextState = produce(args.input, (draft) => {
@@ -16,7 +16,7 @@ export const createInvoice = mutationField('createInvoice', {
       draft.tag = suid.randomUUID(6);
       draft.paymentDue = new Date(Date.now() + dueTime).toISOString();
       draft.items.forEach((item) => {
-        item.itemId = new ShortUniqueId().randomUUID(32);
+        item.id = new ShortUniqueId().randomUUID(32);
       });
     });
 
