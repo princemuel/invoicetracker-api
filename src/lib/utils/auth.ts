@@ -109,6 +109,7 @@ export function getUserId({ request }: Context) {
     throw new GraphQLError(message, {
       extensions: {
         code: 'UNAUTHENTICATED',
+        http: { status: 401 },
       },
     });
   }

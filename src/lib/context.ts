@@ -30,6 +30,7 @@ export async function createContext(express: ExpressContextFunctionArgument) {
     ctx.user = user;
     return ctx;
   } catch (error) {
+    console.log(error);
     return ctx;
   }
 }

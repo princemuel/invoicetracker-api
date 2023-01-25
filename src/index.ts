@@ -14,16 +14,23 @@ import cors from 'cors';
 import express from 'express';
 import http from 'http';
 import { corsOptions } from './config';
-import { createContext, schema } from './lib';
+import { Context, createContext, schema } from './lib';
 
 const PORT = process.env.PORT || 4000;
 
 async function startApolloServer() {
   const app = express();
   const httpServer = http.createServer(app);
-  const server = new ApolloServer({
+  const server = new ApolloServer<Context>({
     schema,
     plugins: [
+      {
+        async requestDidStart({ contextValue }) {
+          // token is properly inferred as a string; note that in Apollo Server 4 you
+          // write `contextValue` rather than `context` in plugins.
+          console.log(contextValue?.user);
+        },
+      },
       ApolloServerPluginDrainHttpServer({ httpServer }),
       // ApolloServerPluginUsageReporting({
       //   // If you pass unmodified: true to the usage reporting

@@ -21,7 +21,6 @@ export const CreateInvoiceInput = inputObjectType({
 export const UpdateInvoiceInput = inputObjectType({
   name: 'UpdateInvoiceInput',
   definition(t) {
-    t.nonNull.string('tag');
     t.nonNull.string('paymentDue');
     t.nonNull.int('paymentTerms');
     t.nonNull.string('description');

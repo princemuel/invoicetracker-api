@@ -33,11 +33,14 @@ export const updateInvoice = mutationField('updateInvoice', {
     where: 'ItemWhereUniqueInput',
   },
   resolve: async (_root, args, ctx) => {
+    const nextState = produce(args.input, (draft) => {
+      const dueTime = 86400 * 1000 * Number(draft?.paymentTerms || 1);
+      draft.paymentDue = new Date(Date.now() + dueTime).toISOString();
+    });
+
     return ctx.db.invoice.update({
       where: { id: args.where.id },
-      data: {
-        ...args.input,
-      },
+      data: nextState,
     });
   },
 });
