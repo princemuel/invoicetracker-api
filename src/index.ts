@@ -42,6 +42,7 @@ async function startApolloServer() {
             includeCookies: true,
           }),
     ],
+
     formatError: (formattedError, error) => {
       // Return a different error message
       if (
@@ -60,6 +61,7 @@ async function startApolloServer() {
       return formattedError;
     },
   });
+
   await server.start();
 
   app.use(

@@ -14,6 +14,6 @@ export const corsOptions = {
   //   }
   // },
   origin: isDev ? local : prod,
-  optionsSuccessStatus: 200,
+  // optionsSuccessStatus: 200,
   credentials: true,
 } as cors.CorsOptions;
