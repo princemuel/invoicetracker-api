@@ -11,13 +11,13 @@ const jwtOptions = {
 };
 /**
  *
- * @param payload JwtPayload
+ * @param payload T
  * @param key "AT" | "RT"
  * @param options SignOptions
  * @returns string
  */
-export const signJwt = (
-  payload: JwtPayload,
+export const signJwt = <T extends {}>(
+  payload: T,
   key: Key,
   options?: SignOptions
 ) => {

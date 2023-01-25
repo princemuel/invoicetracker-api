@@ -14,39 +14,45 @@ const createCookieOptions = (): CookieOptions => {
     secure: isProd ? true : false,
     httpOnly: true,
     // domain: '/',
-    // secure: true,
     // Same site true if frontend and backend are not separate
-    sameSite: 'lax',
+    // sameSite: 'lax',
   };
 };
 
 const cookieOptions = createCookieOptions();
 
-export const createTokens = async (payload: JwtPayload, context: Context) => {
-  const accessToken = signJwt(payload, 'RT', {
+const createAccessToken = <T extends {}>(payload: T) => {
+  return signJwt(payload, 'RT', {
     expiresIn: `${constants.JWT_ACCESS_EXPIRATION}m`,
   });
-  context.response.cookie('access_token', accessToken, {
-    ...cookieOptions,
-    sameSite: 'none',
-    expires: new Date(
-      Date.now() + Number(constants.JWT_ACCESS_EXPIRATION) * 60 * 1000
-    ),
-    maxAge: Number(constants.JWT_ACCESS_EXPIRATION) * 60 * 1000,
+};
+const createRefreshToken = <T extends {}>(payload: T) => {
+  return signJwt(payload, 'RT', {
+    expiresIn: `${constants.JWT_REFRESH_EXPIRATION}d`,
   });
+};
 
-  const refreshToken = signJwt(payload, 'RT', {
-    expiresIn: `${constants.JWT_ACCESS_EXPIRATION}d`,
-  });
-  context.response.cookie('refresh_token', refreshToken, {
+const createRefreshCookie = (token: string) => {
+  const expirationMs =
+    Number(constants.JWT_REFRESH_EXPIRATION) * 24 * 60 * 60 * 1000;
+
+  const options: CookieOptions = {
     ...cookieOptions,
     sameSite: 'none',
-    expires: new Date(
-      Date.now() +
-        Number(constants.JWT_REFRESH_EXPIRATION) * 24 * 60 * 60 * 1000
-    ),
-    maxAge: Number(constants.JWT_REFRESH_EXPIRATION) * 24 * 60 * 60 * 1000,
-  });
+    expires: new Date(Date.now() + expirationMs),
+  };
+
+  return ['jwt', token, options] as const;
+};
+
+export const createTokens = async (payload: JwtPayload, context: Context) => {
+  const accessToken = createAccessToken(payload);
+  const refreshToken = createRefreshToken(payload);
+
+  if (!!context) {
+    const refreshCookie = createRefreshCookie(refreshToken);
+    context.response.cookie(...refreshCookie);
+  }
 
   return {
     accessToken,
@@ -57,7 +63,7 @@ export const createTokens = async (payload: JwtPayload, context: Context) => {
 export function getRefreshCookie({ request }: Context) {
   let message = 'Invalid token: Could not find access token';
 
-  const token = request?.cookies?.['refresh_token'];
+  const token = request?.cookies?.['jwt'] as string;
   if (!token) {
     throw new GraphQLError(message, {
       extensions: {
@@ -80,24 +86,25 @@ export function getRefreshCookie({ request }: Context) {
 }
 
 export const removeRefreshCookie = (context: Context) => {
-  const res = context?.response;
-  res.cookie('access_token', '', { maxAge: 1 });
-  res.cookie('refresh_token', '', { maxAge: 1 });
+  context.response.cookie('jwt', '', { expires: new Date() });
   context.user = null;
 };
 
 export function getUserId({ request }: Context) {
-  let token: any;
-  let message = 'Invalid user: No access token found';
-  const Authorization = request.headers?.['authorization'];
-  const isAuthorized = Authorization?.startsWith('Bearer ');
+  let message = 'Invalid user: This user is not authorised';
+  const Authorization =
+    request.headers?.['authorization'] || request.get('Authorization');
 
-  if (isAuthorized) {
-    token = Authorization?.split(' ')[1];
-  } else if (request?.cookies?.['access_token']) {
-    token = request.cookies['access_token'];
+  if (!Authorization) {
+    throw new GraphQLError(message, {
+      extensions: {
+        code: 'FORBIDDEN',
+      },
+    });
   }
 
+  message = 'Invalid user: No access token found';
+  const token = Authorization.replace('Bearer ', '');
   if (!token) {
     throw new GraphQLError(message, {
       extensions: {
@@ -106,8 +113,7 @@ export function getUserId({ request }: Context) {
     });
   }
 
-  message = 'Invalid token: No valid keys or signatures';
-
+  message = 'Invalid token: No valid key or signature';
   const payload = verifyJwt(token, 'AT');
   if (!payload) {
     throw new GraphQLError(message, {
