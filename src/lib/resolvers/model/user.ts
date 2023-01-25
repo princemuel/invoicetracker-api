@@ -18,23 +18,6 @@ export const User = objectType({
   },
 });
 
-export const AuthPayload = objectType({
-  name: 'AuthPayload',
-  definition(t) {
-    t.nullable.field('user', {
-      type: User,
-    });
-    t.nonNull.string('accessToken');
-  },
-});
-
-export const LogoutPayload = objectType({
-  name: 'LogoutPayload',
-  definition(t) {
-    t.nonNull.string('message');
-  },
-});
-
 export const Role = enumType({
   name: 'Role',
   description: 'The current role of the user',
