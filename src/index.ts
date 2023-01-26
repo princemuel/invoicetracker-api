@@ -77,7 +77,7 @@ async function startApolloServer() {
     json(),
     cookieParser(),
     expressMiddleware(server, {
-      context: createContext,
+      context: async (ctx) => await createContext(ctx),
     })
   );
 

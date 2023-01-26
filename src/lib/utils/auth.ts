@@ -61,23 +61,25 @@ export const createTokens = async (payload: JwtPayload, context: Context) => {
 };
 
 export function getRefreshCookie({ request }: Context) {
-  let message = 'Invalid token: Could not find access token';
+  let message = 'Invalid cookie: Could not find access token';
 
   const token = request?.cookies?.['jwt'] as string;
   if (!token) {
     throw new GraphQLError(message, {
       extensions: {
         code: 'FORBIDDEN',
+        http: { status: 403 },
       },
     });
   }
 
-  message = 'Invalid token: No valid keys or signatures';
+  message = 'Invalid cookie: No valid keys or signatures';
   const payload = verifyJwt(token, 'RT');
   if (!payload) {
     throw new GraphQLError(message, {
       extensions: {
         code: 'FORBIDDEN',
+        http: { status: 403 },
       },
     });
   }
@@ -87,25 +89,13 @@ export function getRefreshCookie({ request }: Context) {
 
 export const removeRefreshCookie = (context: Context) => {
   context.response.cookie('jwt', '', { expires: new Date() });
-  context.user = null;
 };
 
 export function getUserId({ request }: Context) {
   let message = 'Invalid user: This user is not authorised';
-  const Authorization =
-    request.headers?.['authorization'] || request.get('Authorization');
+  const Authorization = request.get('Authorization') || '';
 
   if (!Authorization) {
-    throw new GraphQLError(message, {
-      extensions: {
-        code: 'FORBIDDEN',
-      },
-    });
-  }
-
-  message = 'Invalid user: No access token found';
-  const token = Authorization.replace('Bearer ', '');
-  if (!token) {
     throw new GraphQLError(message, {
       extensions: {
         code: 'UNAUTHENTICATED',
@@ -114,12 +104,25 @@ export function getUserId({ request }: Context) {
     });
   }
 
+  message = 'Invalid user: No access token found';
+  const token = Authorization.replace('Bearer ', '');
+  // if (!token) {
+  //   throw new GraphQLError(message, {
+  //     extensions: {
+  //       code: 'UNAUTHENTICATED',
+  //       http: { status: 401 },
+  //     },
+  //   });
+  // }
+
   message = 'Invalid token: No valid key or signature';
   const payload = verifyJwt(token, 'AT');
+
   if (!payload) {
     throw new GraphQLError(message, {
       extensions: {
-        code: 'FORBIDDEN',
+        code: 'UNAUTHENTICATED',
+        http: { status: 401 },
       },
     });
   }
