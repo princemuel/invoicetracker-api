@@ -41,8 +41,8 @@ export const signJwt = <T extends {}>(
  * @returns JwtPayload | null
  */
 export const verifyJwt = (token: string, key: Key) => {
-  const accessToken = constants.JWT_ACCESS_SECRET;
-  const refreshToken = constants.JWT_REFRESH_SECRET;
+  const accessToken = constants.JWT_ACCESS_PUBLIC;
+  const refreshToken = constants.JWT_REFRESH_PUBLIC;
 
   const secret = key === 'AT' ? accessToken : refreshToken;
 
