@@ -21,16 +21,18 @@ export async function createContext(express: ExpressContextFunctionArgument) {
   };
 
   try {
-    const userId = getUserId(ctx);
+    const userId = ctx.response.locals.user?.['id'] || getUserId(ctx);
     const user = await prisma.user.findFirstOrThrow({
       where: {
         id: userId,
       },
     });
+
     ctx.user = user;
+    ctx.response.locals.user = user;
     return ctx;
   } catch (error) {
-    console.log(error);
+    console.log('GET_USER_ERROR', error);
     return ctx;
   }
 }
