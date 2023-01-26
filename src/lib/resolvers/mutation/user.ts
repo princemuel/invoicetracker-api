@@ -23,6 +23,7 @@ export const register = mutationField('register', {
     });
 
     const { accessToken } = await createTokens({ sub: user.id }, ctx);
+    ctx.response.locals.user = user;
     return {
       user,
       accessToken,
@@ -36,13 +37,13 @@ export const login = mutationField('login', {
     input: nonNull('LoginInput'),
   },
   resolve: async (_root, args, ctx) => {
-    const user = await ctx.db.user.findFirstOrThrow({
+    const user = await ctx.db.user.findUniqueOrThrow({
       where: {
         email: args.input.email.toLowerCase(),
       },
     });
 
-    let message = 'Invalid user: user credentials do not match';
+    let message = 'Invalid input: user credentials do not match';
 
     const matches = await comparePassword(args.input.password, user.password);
     if (!matches)
@@ -53,6 +54,7 @@ export const login = mutationField('login', {
       });
 
     const { accessToken } = await createTokens({ sub: user.id }, ctx);
+    ctx.response.locals.user = user;
     return {
       user,
       accessToken,
@@ -61,16 +63,19 @@ export const login = mutationField('login', {
 });
 
 export const refreshAuth = mutationField('refreshAuth', {
-  type: 'AuthPayload',
+  type: 'RefreshPayload',
   resolve: async (_root, _args, ctx) => {
     const decoded = getRefreshCookie(ctx);
-    const user = await ctx.db.user.findFirstOrThrow({
+
+    const user = await ctx.db.user.findUniqueOrThrow({
       where: {
-        id: decoded.sub,
+        id: decoded?.sub,
       },
     });
 
     const { accessToken } = await createTokens({ sub: user.id }, ctx);
+    ctx.response.locals.user = user;
+    // console.log('USER', ctx.response.locals.user);
     return {
       accessToken,
     };
@@ -91,6 +96,7 @@ export const logout = mutationField('logout', {
       });
 
     removeRefreshCookie(ctx);
+    ctx.response.locals.user = null;
     return {
       message: 'Application logout successful',
     };
