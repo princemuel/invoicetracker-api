@@ -1,5 +1,5 @@
 import * as crypto from 'crypto';
-import { writeFile } from './parsers';
+import { writeFile } from './files';
 
 const generateCryptoKeys = () => {
   const accessToken = crypto.generateKeyPairSync('rsa', {
