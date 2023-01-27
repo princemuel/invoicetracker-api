@@ -13,10 +13,10 @@ import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import express from 'express';
 import http from 'http';
-import { corsOptions } from './config';
+import { constants, corsOptions } from './config';
 import { Context, createContext, schema } from './lib';
 
-const PORT = process.env.PORT || 4000;
+const PORT = constants.PORT;
 
 async function startApolloServer() {
   const app = express();
@@ -24,13 +24,6 @@ async function startApolloServer() {
   const server = new ApolloServer<Context>({
     schema,
     plugins: [
-      {
-        async requestDidStart({ contextValue }) {
-          // token is properly inferred as a string; note that in Apollo Server 4 you
-          // write `contextValue` rather than `context` in plugins.
-          console.log(contextValue?.user);
-        },
-      },
       ApolloServerPluginDrainHttpServer({ httpServer }),
       // ApolloServerPluginUsageReporting({
       //   // If you pass unmodified: true to the usage reporting
@@ -77,14 +70,16 @@ async function startApolloServer() {
     json(),
     cookieParser(),
     expressMiddleware(server, {
-      context: async (ctx) => await createContext(ctx),
+      context: createContext,
     })
   );
 
   await new Promise<void>((resolve) =>
     httpServer.listen({ port: PORT }, resolve)
   );
-  console.log(`🚀 Server ready at http://localhost:${PORT}/graphql`);
+  if (process.env.NODE_ENV === 'development') {
+    console.log(`🚀 Server ready at http://localhost:${PORT}/graphql`);
+  }
 }
 
 // Start server

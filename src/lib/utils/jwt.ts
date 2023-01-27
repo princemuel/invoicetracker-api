@@ -1,7 +1,7 @@
 import * as bcrypt from 'bcrypt';
 import jwt, { SignOptions } from 'jsonwebtoken';
-import { JwtPayload } from './auth';
-import { constants } from './environment';
+import { constants } from '../../config';
+import type { JwtPayload } from './types';
 
 type Key = 'AT' | 'RT';
 
@@ -30,7 +30,6 @@ export const signJwt = <T extends {}>(
     ...(options ?? {}),
     ...jwtOptions,
     algorithm: 'RS256',
-    allowInsecureKeySizes: true,
   });
 };
 
@@ -48,10 +47,10 @@ export const verifyJwt = (token: string, key: Key) => {
 
   try {
     return jwt.verify(token, secret, {
-      ...jwtOptions,
       algorithms: ['RS256'],
     }) as JwtPayload;
   } catch (error) {
+    console.log('VERIFICATION ERROR', error);
     return null;
   }
 };

@@ -1,18 +1,16 @@
 import type { CookieOptions } from 'express';
 import { GraphQLError } from 'graphql';
+import { constants } from '../../config/environment';
 import type { Context } from '../context';
-import { constants } from './environment';
 import { signJwt, verifyJwt } from './jwt';
-
-export type JwtPayload = {
-  sub: string;
-};
+import { JwtPayload } from './types';
 
 const createCookieOptions = (): CookieOptions => {
   const isProd = process.env.NODE_ENV === 'production';
   return {
     secure: isProd ? true : false,
     httpOnly: true,
+    sameSite: 'none',
     // domain: '/',
     // Same site true if frontend and backend are not separate
     // sameSite: 'lax',
@@ -21,28 +19,39 @@ const createCookieOptions = (): CookieOptions => {
 
 const cookieOptions = createCookieOptions();
 
-const createAccessToken = <T extends {}>(payload: T) => {
-  return signJwt(payload, 'RT', {
+const createAccessToken = (payload: JwtPayload) => {
+  return signJwt(payload, 'AT', {
+    subject: payload?.user,
     expiresIn: `${constants.JWT_ACCESS_EXPIRATION}m`,
   });
 };
-const createRefreshToken = <T extends {}>(payload: T) => {
+
+const createRefreshToken = (payload: JwtPayload) => {
   return signJwt(payload, 'RT', {
+    subject: payload?.user,
     expiresIn: `${constants.JWT_REFRESH_EXPIRATION}d`,
   });
 };
 
-const createRefreshCookie = (token: string) => {
-  const expirationMs =
+const createCookies = (accessToken: string, refreshToken: string) => {
+  const accessExpiration = Number(constants.JWT_ACCESS_EXPIRATION) * 60 * 1000;
+  const refreshExpiration =
     Number(constants.JWT_REFRESH_EXPIRATION) * 24 * 60 * 60 * 1000;
 
-  const options: CookieOptions = {
+  const accessOptions: CookieOptions = {
     ...cookieOptions,
-    sameSite: 'none',
-    expires: new Date(Date.now() + expirationMs),
+    expires: new Date(Date.now() + accessExpiration),
   };
 
-  return ['jwt', token, options] as const;
+  const refreshOptions: CookieOptions = {
+    ...cookieOptions,
+    expires: new Date(Date.now() + refreshExpiration),
+  };
+
+  return [
+    ['token', accessToken, accessOptions],
+    ['jwt', refreshToken, refreshOptions],
+  ] as const;
 };
 
 export const createTokens = async (payload: JwtPayload, context: Context) => {
@@ -50,8 +59,12 @@ export const createTokens = async (payload: JwtPayload, context: Context) => {
   const refreshToken = createRefreshToken(payload);
 
   if (!!context) {
-    const refreshCookie = createRefreshCookie(refreshToken);
-    context.response.cookie(...refreshCookie);
+    const [accessCookie, refreshCookie] = createCookies(
+      accessToken,
+      refreshToken
+    );
+    context.res.cookie(...accessCookie);
+    context.res.cookie(...refreshCookie);
   }
 
   return {
@@ -60,10 +73,10 @@ export const createTokens = async (payload: JwtPayload, context: Context) => {
   };
 };
 
-export function getRefreshCookie({ request }: Context) {
-  let message = 'Invalid cookie: Could not find access token';
+export function getRefreshCookie({ req }: Context) {
+  let message = 'Invalid cookie: Could not find refresh token';
 
-  const token = request?.cookies?.['jwt'] as string;
+  const token = req?.cookies?.['jwt'] as string;
   if (!token) {
     throw new GraphQLError(message, {
       extensions: {
@@ -87,44 +100,15 @@ export function getRefreshCookie({ request }: Context) {
   return payload;
 }
 
-export const removeRefreshCookie = (context: Context) => {
-  context.response.cookie('jwt', '', { expires: new Date() });
+export const removeCookies = (context: Context) => {
+  context.res.clearCookie('token', {
+    httpOnly: true,
+    sameSite: 'none',
+    secure: true,
+  });
+  context.res.clearCookie('jwt', {
+    httpOnly: true,
+    sameSite: 'none',
+    secure: true,
+  });
 };
-
-export function getUserId({ request }: Context) {
-  let message = 'Invalid user: This user is not authorised';
-  const Authorization = request.get('Authorization') || '';
-
-  if (!Authorization) {
-    throw new GraphQLError(message, {
-      extensions: {
-        code: 'UNAUTHENTICATED',
-        http: { status: 401 },
-      },
-    });
-  }
-
-  message = 'Invalid user: No access token found';
-  const token = Authorization.replace('Bearer ', '');
-  // if (!token) {
-  //   throw new GraphQLError(message, {
-  //     extensions: {
-  //       code: 'UNAUTHENTICATED',
-  //       http: { status: 401 },
-  //     },
-  //   });
-  // }
-
-  message = 'Invalid token: No valid key or signature';
-  const payload = verifyJwt(token, 'AT');
-
-  if (!payload) {
-    throw new GraphQLError(message, {
-      extensions: {
-        code: 'UNAUTHENTICATED',
-        http: { status: 401 },
-      },
-    });
-  }
-  return payload.sub;
-}
