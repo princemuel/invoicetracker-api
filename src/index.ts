@@ -24,13 +24,6 @@ async function startApolloServer() {
   const server = new ApolloServer<Context>({
     schema,
     plugins: [
-      {
-        async requestDidStart({ contextValue }) {
-          // token is properly inferred as a string; note that in Apollo Server 4 you
-          // write `contextValue` rather than `context` in plugins.
-          // console.log(contextValue?.user);
-        },
-      },
       ApolloServerPluginDrainHttpServer({ httpServer }),
       // ApolloServerPluginUsageReporting({
       //   // If you pass unmodified: true to the usage reporting
@@ -84,7 +77,9 @@ async function startApolloServer() {
   await new Promise<void>((resolve) =>
     httpServer.listen({ port: PORT }, resolve)
   );
-  console.log(`🚀 Server ready at http://localhost:${PORT}/graphql`);
+  if (process.env.NODE_ENV === 'development') {
+    console.log(`🚀 Server ready at http://localhost:${PORT}/graphql`);
+  }
 }
 
 // Start server

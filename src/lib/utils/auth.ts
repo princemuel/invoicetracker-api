@@ -21,14 +21,14 @@ const cookieOptions = createCookieOptions();
 
 const createAccessToken = (payload: JwtPayload) => {
   return signJwt(payload, 'AT', {
-    // subject: payload?.user,
+    subject: payload?.user,
     expiresIn: `${constants.JWT_ACCESS_EXPIRATION}m`,
   });
 };
 
 const createRefreshToken = (payload: JwtPayload) => {
   return signJwt(payload, 'RT', {
-    // subject: payload?.user,
+    subject: payload?.user,
     expiresIn: `${constants.JWT_REFRESH_EXPIRATION}d`,
   });
 };
