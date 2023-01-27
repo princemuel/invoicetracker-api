@@ -1,38 +1,23 @@
 import type { ExpressContextFunctionArgument } from '@apollo/server/express4';
 import { PrismaClient, User } from '@prisma/client';
-import * as express from 'express';
 import { prisma } from '../client';
-import { getUserId } from './utils';
+import { ApiRequest, ApiResponse, createUserContext } from './utils';
 
 export interface Context {
-  user: User | null;
-  request: express.Request;
-  response: express.Response;
+  req: ApiRequest;
+  res: ApiResponse;
   db: PrismaClient;
+  createUserContext: (req: ApiRequest) => Promise<User | null>;
 }
 
-export async function createContext(express: ExpressContextFunctionArgument) {
-  const ctx: Context = {
-    ...express,
-    request: express?.req,
-    response: express?.res,
+export async function createContext(
+  context: ExpressContextFunctionArgument
+): Promise<Context> {
+  return {
+    ...context,
+    req: context?.req,
+    res: context?.res,
     db: prisma,
-    user: null,
+    createUserContext,
   };
-
-  try {
-    const userId = ctx.response.locals.user?.['id'] || getUserId(ctx);
-    const user = await prisma.user.findFirstOrThrow({
-      where: {
-        id: userId,
-      },
-    });
-
-    ctx.user = user;
-    ctx.response.locals.user = user;
-    return ctx;
-  } catch (error) {
-    console.log('GET_USER_ERROR', error);
-    return ctx;
-  }
 }
