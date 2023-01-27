@@ -3,7 +3,7 @@ import { inputObjectType } from 'nexus';
 export const CreateInvoiceInput = inputObjectType({
   name: 'CreateInvoiceInput',
   definition(t) {
-    t.nonNull.id('userId');
+    t.nullable.id('userId');
     t.nonNull.string('tag');
     t.nonNull.string('paymentDue');
     t.nonNull.int('paymentTerms');
@@ -59,9 +59,16 @@ export const InvoiceItemInput = inputObjectType({
   },
 });
 
-export const ItemWhereUniqueInput = inputObjectType({
-  name: 'ItemWhereUniqueInput',
+export const UniqueIdInput = inputObjectType({
+  name: 'UniqueIdInput',
   definition(t) {
     t.nonNull.id('id');
+  },
+});
+
+export const UniqueUserId = inputObjectType({
+  name: 'UniqueUserId',
+  definition(t) {
+    t.nonNull.id('userId');
   },
 });

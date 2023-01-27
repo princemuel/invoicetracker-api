@@ -5,7 +5,7 @@ import {
   createTokens,
   getRefreshCookie,
   hashPassword,
-  removeRefreshCookie,
+  removeCookies,
 } from '../../utils';
 
 export const register = mutationField('register', {
@@ -17,13 +17,15 @@ export const register = mutationField('register', {
     const user = await ctx.db.user.create({
       data: {
         ...args.input,
-        email: args.input.email.toLowerCase(),
-        password: await hashPassword(args.input.password),
+        firstName: args.input.firstName.trim(),
+        lastName: args.input.lastName.trim(),
+        email: args.input.email.toLowerCase().trim(),
+        password: await hashPassword(args.input.password.trim()),
       },
     });
 
-    const { accessToken } = await createTokens({ sub: user.id }, ctx);
-    ctx.response.locals.user = user;
+    const { accessToken } = await createTokens({ user: user.id }, ctx);
+
     return {
       user,
       accessToken,
@@ -37,24 +39,33 @@ export const login = mutationField('login', {
     input: nonNull('LoginInput'),
   },
   resolve: async (_root, args, ctx) => {
-    const user = await ctx.db.user.findUniqueOrThrow({
+    const user = await ctx.db.user.findUnique({
       where: {
         email: args.input.email.toLowerCase(),
       },
     });
 
-    let message = 'Invalid input: user credentials do not match';
+    let message = 'Invalid email: This user was not found';
+    if (!user)
+      throw new GraphQLError(message, {
+        extensions: {
+          code: 'UNAUTHENTICATED',
+          http: { status: 401 },
+        },
+      });
 
+    message = 'Invalid input: user credentials do not match';
     const matches = await comparePassword(args.input.password, user.password);
     if (!matches)
       throw new GraphQLError(message, {
         extensions: {
           code: 'UNAUTHENTICATED',
+          http: { status: 401 },
         },
       });
 
-    const { accessToken } = await createTokens({ sub: user.id }, ctx);
-    ctx.response.locals.user = user;
+    const { accessToken } = await createTokens({ user: user.id }, ctx);
+
     return {
       user,
       accessToken,
@@ -66,16 +77,21 @@ export const refreshAuth = mutationField('refreshAuth', {
   type: 'RefreshPayload',
   resolve: async (_root, _args, ctx) => {
     const decoded = getRefreshCookie(ctx);
-
-    const user = await ctx.db.user.findUniqueOrThrow({
+    const user = await ctx.db.user.findUnique({
       where: {
-        id: decoded?.sub,
+        id: decoded.user,
       },
     });
 
-    const { accessToken } = await createTokens({ sub: user.id }, ctx);
-    ctx.response.locals.user = user;
-    // console.log('USER', ctx.response.locals.user);
+    let message = 'Invalid user: This user was not found';
+    if (!user)
+      throw new GraphQLError(message, {
+        extensions: {
+          code: 'FORBIDDEN',
+        },
+      });
+
+    const { accessToken } = await createTokens({ user: user.id }, ctx);
     return {
       accessToken,
     };
@@ -85,20 +101,28 @@ export const refreshAuth = mutationField('refreshAuth', {
 export const logout = mutationField('logout', {
   type: nonNull('LogoutPayload'),
   resolve: async (_root, _args, ctx) => {
-    let message = 'Invalid logout cookie. Could not find the access token';
-
-    const decoded = getRefreshCookie(ctx);
-    if (!decoded)
-      throw new GraphQLError(message, {
-        extensions: {
-          code: 'FORBIDDEN',
-        },
-      });
-
-    removeRefreshCookie(ctx);
-    ctx.response.locals.user = null;
-    return {
-      message: 'Application logout successful',
-    };
+    try {
+      const cookies = ctx.req.cookies;
+      if (!cookies?.jwt || !cookies?.token) {
+        throw new GraphQLError(
+          'Invalid cookie: Could not find the access token',
+          {
+            extensions: {
+              code: 'FORBIDDEN',
+              http: { status: 204 },
+            },
+          }
+        );
+      }
+      removeCookies(ctx);
+      return {
+        message: 'Logout successful',
+      };
+    } catch (error) {
+      removeCookies(ctx);
+      return {
+        message: JSON.stringify(error),
+      };
+    }
   },
 });
