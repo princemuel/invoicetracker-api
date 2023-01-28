@@ -11,9 +11,6 @@ const createCookieOptions = (): CookieOptions => {
     secure: isProd ? true : false,
     httpOnly: true,
     sameSite: 'none',
-    // domain: '/',
-    // Same site true if frontend and backend are not separate
-    // sameSite: 'lax',
   };
 };
 
@@ -100,15 +97,7 @@ export function getRefreshCookie({ req }: Context) {
   return payload;
 }
 
-export const removeCookies = (context: Context) => {
-  context.res.clearCookie('token', {
-    httpOnly: true,
-    sameSite: 'none',
-    secure: true,
-  });
-  context.res.clearCookie('jwt', {
-    httpOnly: true,
-    sameSite: 'none',
-    secure: true,
-  });
+export const removeCookies = ({ res }: Context) => {
+  res.clearCookie('token', { ...cookieOptions });
+  res.clearCookie('jwt', { ...cookieOptions });
 };

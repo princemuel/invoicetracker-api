@@ -1,12 +1,11 @@
 import { GraphQLError } from 'graphql';
 import { list, nonNull, nullable, queryField } from 'nexus';
-import { createUserContext } from '../../utils';
 
 export const invoices = queryField('invoices', {
   type: nonNull(list('Invoice')),
   resolve: async (root, args, ctx) => {
     try {
-      const user = await createUserContext(ctx.req);
+      const user = await ctx.createUserContext(ctx.req);
       if (!user) {
         throw new GraphQLError('Invalid User: User not authorised', {
           extensions: {
@@ -34,7 +33,7 @@ export const invoice = queryField('invoice', {
   },
   resolve: async (root, args, ctx) => {
     try {
-      await createUserContext(ctx.req);
+      await ctx.createUserContext(ctx.req);
 
       return ctx.db.invoice.findUniqueOrThrow({
         where: {

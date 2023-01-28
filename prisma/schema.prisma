@@ -39,7 +39,7 @@ model Invoice {
   clientAddress Address
   items         InvoiceItem[]
   total         Float
-  user          User?         @relation(fields: [userId], references: [id])
+  user          User?         @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId        String?       @db.ObjectId
 
   @@map("invoices")

@@ -2,7 +2,6 @@ import { GraphQLError } from 'graphql';
 import produce from 'immer';
 import { mutationField, nullable } from 'nexus';
 import ShortUniqueId from 'short-unique-id';
-import { createUserContext } from '../../utils';
 
 const suid = new ShortUniqueId({
   dictionary: 'hex',
@@ -13,7 +12,7 @@ export const createInvoice = mutationField('createInvoice', {
   args: { input: 'CreateInvoiceInput' },
   resolve: async (_root, args, ctx) => {
     try {
-      const user = await createUserContext(ctx.req);
+      const user = await ctx.createUserContext(ctx.req);
       if (!user) {
         throw new GraphQLError('Invalid User: User not authorised', {
           extensions: {
@@ -53,7 +52,7 @@ export const updateInvoice = mutationField('updateInvoice', {
   },
   resolve: async (_root, args, ctx) => {
     try {
-      const user = await createUserContext(ctx.req);
+      const user = await ctx.createUserContext(ctx.req);
       if (!user) {
         throw new GraphQLError('Invalid User: User not authorised', {
           extensions: {
@@ -85,7 +84,7 @@ export const deleteInvoice = mutationField('deleteInvoice', {
   },
   resolve: async (_root, args, ctx) => {
     try {
-      const user = await createUserContext(ctx.req);
+      const user = await ctx.createUserContext(ctx.req);
       if (!user) {
         throw new GraphQLError('Invalid User: User not authorised', {
           extensions: {
