@@ -1,6 +1,6 @@
 import { ApolloServerErrorCode } from '@apollo/server/errors';
 import { GraphQLError } from 'graphql';
-import { mutationField, nonNull } from 'nexus';
+import { mutationField, nonNull, nullable } from 'nexus';
 import {
   comparePassword,
   createTokens,
@@ -10,7 +10,7 @@ import {
 } from '../../utils';
 
 export const register = mutationField('register', {
-  type: nonNull('AuthPayload'),
+  type: nullable('AuthPayload'),
   args: {
     input: nonNull('RegisterInput'),
   },
@@ -38,7 +38,6 @@ export const register = mutationField('register', {
         password: await hashPassword(password.trim()),
       },
     });
-
     const { accessToken } = await createTokens({ user: user.id }, ctx);
 
     return {
