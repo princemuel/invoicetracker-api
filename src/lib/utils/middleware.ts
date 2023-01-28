@@ -1,9 +1,9 @@
 import { GraphQLError } from 'graphql';
 import { prisma } from '../../client';
 import { verifyJwt } from './jwt';
-import { ApiRequest } from './types';
+import { ExpressRequest } from './types';
 
-export const createUserContext = async (req: ApiRequest) => {
+export const createUserContext = async (req: ExpressRequest) => {
   try {
     let message = 'Invalid user: This user is not authorised';
     const token: string =

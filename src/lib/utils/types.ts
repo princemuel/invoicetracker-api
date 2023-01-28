@@ -1,7 +1,8 @@
 import * as express from 'express';
+import * as jwt from 'jsonwebtoken';
 
-export type ApiRequest = express.Request;
-export type ApiResponse = express.Response;
-export type JwtPayload = {
+export type ExpressRequest = express.Request;
+export type ExpressResponse = express.Response;
+export interface JwtPayload extends jwt.JwtPayload {
   user: string;
-};
+}
