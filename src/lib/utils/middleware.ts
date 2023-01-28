@@ -5,19 +5,10 @@ import { ApiRequest } from './types';
 
 export const createUserContext = async (req: ApiRequest) => {
   try {
-    let token;
     let message = 'Invalid user: This user is not authorised';
-    const authorization = req.get('Authorization');
+    const token: string =
+      req.get('Authorization')?.split(' ')[1] || req.cookies?.['token'];
 
-    if (authorization) {
-      token = authorization.split(' ')[1];
-      console.log('AUTHORIZED', token);
-    } else if (req.cookies?.['token']) {
-      token = req.cookies['token'];
-      console.log('COOKIES', token);
-    }
-
-    message = 'Invalid user: No access token found';
     if (!token) {
       throw new GraphQLError(message, {
         extensions: {
