@@ -1,3 +1,4 @@
+import { ApolloServerErrorCode } from '@apollo/server/errors';
 import { GraphQLError } from 'graphql';
 import { mutationField, nonNull } from 'nexus';
 import {
@@ -14,13 +15,27 @@ export const register = mutationField('register', {
     input: nonNull('RegisterInput'),
   },
   resolve: async (_root, args, ctx) => {
+    const { firstName, lastName, email, password } = args.input;
+
+    if (!firstName || !lastName || !email || !password) {
+      throw new GraphQLError(
+        'Invalid input: firstName, lastName, email and password are required',
+        {
+          extensions: {
+            code: ApolloServerErrorCode.BAD_USER_INPUT,
+            http: { status: 400 },
+          },
+        }
+      );
+    }
+
     const user = await ctx.db.user.create({
       data: {
         ...args.input,
-        firstName: args.input.firstName.trim(),
-        lastName: args.input.lastName.trim(),
-        email: args.input.email.toLowerCase().trim(),
-        password: await hashPassword(args.input.password.trim()),
+        firstName: firstName.trim(),
+        lastName: lastName.trim(),
+        email: email.toLowerCase().trim(),
+        password: await hashPassword(password.trim()),
       },
     });
 
@@ -108,20 +123,21 @@ export const logout = mutationField('logout', {
           'Invalid cookie: Could not find the access token',
           {
             extensions: {
-              code: 'FORBIDDEN',
+              code: 'NO_CONTENT',
               http: { status: 204 },
             },
           }
         );
       }
+
       removeCookies(ctx);
       return {
         message: 'Logout successful',
       };
-    } catch (error) {
+    } catch (error: any) {
       removeCookies(ctx);
       return {
-        message: JSON.stringify(error),
+        message: error?.message,
       };
     }
   },
