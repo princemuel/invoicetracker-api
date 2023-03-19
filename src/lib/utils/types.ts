@@ -1,8 +1,19 @@
-import * as express from 'express';
+import { Request, Response } from 'express';
 import * as jwt from 'jsonwebtoken';
 
-export type ExpressRequest = express.Request;
-export type ExpressResponse = express.Response;
+export interface ExpressRequest extends Request {
+  cookies: {
+    jwt: string;
+    token: string;
+  };
+}
+
+export interface ExpressResponse extends Response {
+  cookies?: {
+    jwt: string;
+    token: string;
+  };
+}
 export interface JwtPayload extends jwt.JwtPayload {
   user: string;
 }

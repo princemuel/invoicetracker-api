@@ -1,5 +1,6 @@
-require('dotenv').config();
+import * as dotenv from 'dotenv-safe';
 import { readFile } from '../lib/utils/files';
+dotenv.config();
 
 export const constants = {
   JWT_ACCESS_PUBLIC: readFile('public-at.pem'),

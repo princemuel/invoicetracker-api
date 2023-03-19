@@ -6,8 +6,7 @@ import { ExpressRequest } from './types';
 export const createUserContext = async (req: ExpressRequest) => {
   try {
     let message = 'Invalid user: This user is not authorised';
-    const token: string =
-      req.get('Authorization')?.split(' ')[1] || req.cookies?.['token'];
+    const token = req.get('Authorization')?.split(' ')[1] || req.cookies?.token;
 
     if (!token) {
       throw new GraphQLError(message, {
@@ -19,7 +18,7 @@ export const createUserContext = async (req: ExpressRequest) => {
     }
 
     message = 'Invalid access token: No valid key or signature';
-    const decoded = verifyJwt(token, 'AT');
+    const decoded = verifyJwt(token, 'AccessToken');
     console.log('DECODED', decoded);
     if (!decoded) {
       throw new GraphQLError(message, {

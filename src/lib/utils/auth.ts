@@ -17,14 +17,14 @@ const createCookieOptions = (): CookieOptions => {
 const cookieOptions = createCookieOptions();
 
 const createAccessToken = (payload: JwtPayload) => {
-  return signJwt(payload, 'AT', {
+  return signJwt(payload, 'AccessToken', {
     subject: payload?.user,
     expiresIn: `${constants.JWT_ACCESS_EXPIRATION}m`,
   });
 };
 
 const createRefreshToken = (payload: JwtPayload) => {
-  return signJwt(payload, 'RT', {
+  return signJwt(payload, 'RefreshToken', {
     subject: payload?.user,
     expiresIn: `${constants.JWT_REFRESH_EXPIRATION}d`,
   });
@@ -51,11 +51,11 @@ const createCookies = (accessToken: string, refreshToken: string) => {
   ] as const;
 };
 
-export const createTokens = async (payload: JwtPayload, context: Context) => {
+export const createTokens = (payload: JwtPayload, context: Context) => {
   const accessToken = createAccessToken(payload);
   const refreshToken = createRefreshToken(payload);
 
-  if (!!context) {
+  if (context) {
     const [accessCookie, refreshCookie] = createCookies(
       accessToken,
       refreshToken
@@ -73,7 +73,7 @@ export const createTokens = async (payload: JwtPayload, context: Context) => {
 export function getRefreshCookie({ req }: Context) {
   let message = 'Invalid cookie: Could not find refresh token';
 
-  const token = req?.cookies?.['jwt'] as string;
+  const token = req?.cookies?.jwt;
   if (!token) {
     throw new GraphQLError(message, {
       extensions: {
@@ -84,7 +84,7 @@ export function getRefreshCookie({ req }: Context) {
   }
 
   message = 'Invalid cookie: No valid keys or signatures';
-  const payload = verifyJwt(token, 'RT');
+  const payload = verifyJwt(token, 'RefreshToken');
   if (!payload) {
     throw new GraphQLError(message, {
       extensions: {
