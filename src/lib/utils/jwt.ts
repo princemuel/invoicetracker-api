@@ -3,7 +3,7 @@ import jwt, { SignOptions } from 'jsonwebtoken';
 import { constants } from '../../config';
 import type { JwtPayload } from './types';
 
-type Key = 'AT' | 'RT';
+type Key = 'AccessToken' | 'RefreshToken';
 
 const jwtOptions = {
   issuer: 'Invoice Mailer',
@@ -11,20 +11,20 @@ const jwtOptions = {
 };
 /**
  *
- * @param payload T
- * @param key "AT" | "RT"
+ * @param payload JwtPayload
+ * @param key AccessToken OR RefreshToken
  * @param options SignOptions
  * @returns string
  */
-export const signJwt = <T extends {}>(
-  payload: T,
+export const signJwt = (
+  payload: JwtPayload,
   key: Key,
   options?: SignOptions
 ) => {
   const accessToken = constants.JWT_ACCESS_SECRET;
   const refreshToken = constants.JWT_REFRESH_SECRET;
 
-  const secret = key === 'AT' ? accessToken : refreshToken;
+  const secret = key === 'AccessToken' ? accessToken : refreshToken;
 
   return jwt.sign(payload, secret, {
     ...(options ?? {}),
@@ -36,14 +36,14 @@ export const signJwt = <T extends {}>(
 /**
  *
  * @param token string
- * @param key "AT" | "RT"
+ * @param key AccessToken OR RefreshToken
  * @returns JwtPayload | null
  */
 export const verifyJwt = (token: string, key: Key) => {
   const accessToken = constants.JWT_ACCESS_PUBLIC;
   const refreshToken = constants.JWT_REFRESH_PUBLIC;
 
-  const secret = key === 'AT' ? accessToken : refreshToken;
+  const secret = key === 'AccessToken' ? accessToken : refreshToken;
 
   try {
     return jwt.verify(token, secret, {
@@ -55,11 +55,11 @@ export const verifyJwt = (token: string, key: Key) => {
   }
 };
 
-export async function comparePassword(data: string, hashed: string) {
-  return await bcrypt.compare(data, hashed);
+export async function comparePassword(data: string, encrypted: string) {
+  return await bcrypt.compare(data, encrypted);
 }
 
-export async function hashPassword(data: string) {
-  const salt = await bcrypt.genSalt(12);
+export async function hashPassword(data: string, rounds = 12) {
+  const salt = await bcrypt.genSalt(rounds);
   return await bcrypt.hash(data, salt);
 }
