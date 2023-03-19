@@ -13,10 +13,15 @@ const baseSchema = makeSchema({
     guardPlugin,
   ],
   outputs: {
-    typegen: path.join(process.cwd(), 'generated', 'types.d.ts'),
+    typegen: path.join(
+      process.cwd(),
+      'node_modules',
+      '@types',
+      'nexus-gen',
+      'index.d.ts'
+    ),
     schema: path.join(process.cwd(), 'generated', 'schema.gql'),
   },
-
   contextType: {
     export: 'Context',
     module: path.join(process.cwd(), 'src', 'lib', 'context.ts'),
