@@ -1,4 +1,3 @@
-require('dotenv').config();
 import { ApolloServer } from '@apollo/server';
 import { ApolloServerErrorCode } from '@apollo/server/errors';
 import { expressMiddleware } from '@apollo/server/express4';
@@ -83,4 +82,4 @@ async function startApolloServer() {
 }
 
 // Start server
-startApolloServer();
+startApolloServer().catch((e) => console.log(e));

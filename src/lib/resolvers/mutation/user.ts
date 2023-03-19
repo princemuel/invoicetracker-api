@@ -4,6 +4,7 @@ import { mutationField, nonNull, nullable } from 'nexus';
 import {
   comparePassword,
   createTokens,
+  getErrorMessage,
   getRefreshCookie,
   hashPassword,
   removeCookies,
@@ -38,7 +39,7 @@ export const register = mutationField('register', {
         password: await hashPassword(password.trim()),
       },
     });
-    const { accessToken } = await createTokens({ user: user.id }, ctx);
+    const { accessToken } = createTokens({ user: user.id }, ctx);
 
     return {
       user,
@@ -78,7 +79,7 @@ export const login = mutationField('login', {
         },
       });
 
-    const { accessToken } = await createTokens({ user: user.id }, ctx);
+    const { accessToken } = createTokens({ user: user.id }, ctx);
 
     return {
       user,
@@ -97,7 +98,7 @@ export const refreshAuth = mutationField('refreshAuth', {
       },
     });
 
-    let message = 'Invalid user: This user was not found';
+    const message = 'Invalid user: This user was not found';
     if (!user)
       throw new GraphQLError(message, {
         extensions: {
@@ -105,7 +106,7 @@ export const refreshAuth = mutationField('refreshAuth', {
         },
       });
 
-    const { accessToken } = await createTokens({ user: user.id }, ctx);
+    const { accessToken } = createTokens({ user: user.id }, ctx);
     return {
       accessToken,
     };
@@ -117,7 +118,7 @@ export const logout = mutationField('logout', {
   resolve: async (_root, _args, ctx) => {
     try {
       const cookies = ctx.req.cookies;
-      if (!cookies?.jwt || !cookies?.token) {
+      if (!(cookies?.jwt || cookies?.token)) {
         throw new GraphQLError(
           'Invalid cookie: Could not find the access token',
           {
@@ -133,10 +134,10 @@ export const logout = mutationField('logout', {
       return {
         message: 'Logout successful',
       };
-    } catch (error: any) {
+    } catch (error) {
       removeCookies(ctx);
       return {
-        message: error?.message,
+        message: getErrorMessage(error),
       };
     }
   },
