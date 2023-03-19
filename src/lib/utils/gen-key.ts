@@ -1,7 +1,7 @@
 import * as crypto from 'crypto';
 import { writeFile } from './files';
 
-const generateCryptoKeys = () => {
+(function () {
   const accessToken = crypto.generateKeyPairSync('rsa', {
     modulusLength: 4096,
     publicKeyEncoding: {
@@ -29,6 +29,4 @@ const generateCryptoKeys = () => {
   writeFile('private-at.pem', accessToken.privateKey);
   writeFile('public-rt.pem', refreshToken.publicKey);
   writeFile('private-rt.pem', refreshToken.privateKey);
-};
-
-generateCryptoKeys();
+})();
