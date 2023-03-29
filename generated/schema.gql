@@ -150,7 +150,7 @@ type LogoutPayload {
 type Mutation {
   createInvoice(input: CreateInvoiceInput!): Invoice
   deleteInvoice(where: UniqueIdInput!): Invoice
-  login(input: LoginInput!): AuthPayload!
+  login(input: LoginInput!): AuthPayload
   logout: LogoutPayload!
   refreshAuth: RefreshPayload
   register(input: RegisterInput!): AuthPayload
@@ -167,6 +167,8 @@ type RefreshPayload {
 }
 
 input RegisterInput {
+  address: AddressInput
+
   """The reentered password to confirm that the passwords match"""
   countersign: String
   email: String!
