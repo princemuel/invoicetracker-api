@@ -7,7 +7,6 @@ import {
   ApolloServerPluginLandingPageProductionDefault,
 } from '@apollo/server/plugin/landingPage/default';
 // import { ApolloServerPluginUsageReporting } from '@apollo/server/plugin/usageReporting';
-import { json } from 'body-parser';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import express from 'express';
@@ -17,7 +16,8 @@ import { Context, createContext, schema } from './lib';
 
 const PORT = constants.PORT;
 
-async function startApolloServer() {
+/** Starts the application */
+async function bootstrap() {
   const app = express();
   const httpServer = http.createServer(app);
   const server = new ApolloServer<Context>({
@@ -65,9 +65,23 @@ async function startApolloServer() {
 
   app.use(
     '/graphql',
+
+    // Handle options credentials check - before CORS!
+    // and fetch cookies credentials requirement
+    // credentials,
+
+    // Cross Origin Resource Sharing
     cors<cors.CorsRequest>(corsOptions),
-    json(),
+
+    // built-in middleware to handle urlencoded form data
+    express.urlencoded({ extended: false }),
+
+    // built-in middleware for json
+    express.json({ limit: '100kb' }),
+
+    //middleware for cookies
     cookieParser(),
+
     expressMiddleware(server, {
       context: createContext,
     })
@@ -82,4 +96,4 @@ async function startApolloServer() {
 }
 
 // Start server
-startApolloServer().catch((e) => console.log(e));
+bootstrap().catch((e) => console.log(e));
