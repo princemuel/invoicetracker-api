@@ -20,5 +20,9 @@ module.exports = {
     // Note: you must disable the base rule as it can report incorrect errors
     'require-await': 'off',
     '@typescript-eslint/require-await': 'off',
+    '@typescript-eslint/interface-name-prefix': 'off',
+    '@typescript-eslint/explicit-function-return-type': 'warn',
+    '@typescript-eslint/explicit-module-boundary-types': 'off',
+    '@typescript-eslint/no-explicit-any': 'error',
   },
 };
