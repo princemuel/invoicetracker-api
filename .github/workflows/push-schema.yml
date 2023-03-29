@@ -1,4 +1,4 @@
-name: CI
+name: PUSH GRAPHQL SCHEMA TO FRONTEND REPO
 
 on:
   push:
@@ -16,7 +16,7 @@ jobs:
           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
         with:
           source-directory: './generated'
-          target-directory: 'lib/schema'
+          target-directory: './src/lib'
           destination-github-username: 'princemuel'
           destination-repository-name: 'invoice-web-app'
           user-email: vansomecsam@gmail.com
