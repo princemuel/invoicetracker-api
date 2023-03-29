@@ -13,4 +13,4 @@ export const constants = {
   JWT_REFRESH_EXPIRATION: process.env.JWT_REFRESH_EXPIRATION || '1',
 
   PORT: process.env.PORT || 4000,
-};
+} as const;
