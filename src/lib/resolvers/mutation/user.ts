@@ -1,4 +1,5 @@
 import { ApolloServerErrorCode } from '@apollo/server/errors';
+import { Prisma } from '@prisma/client';
 import { GraphQLError } from 'graphql';
 import { mutationField, nonNull, nullable } from 'nexus';
 import {
@@ -16,75 +17,119 @@ export const register = mutationField('register', {
     input: nonNull('RegisterInput'),
   },
   resolve: async (_root, args, ctx) => {
-    const { firstName, lastName, email, password } = args.input;
+    try {
+      const { firstName, lastName, email, password } = args.input;
 
-    if (!firstName || !lastName || !email || !password) {
-      throw new GraphQLError(
-        'Invalid input: firstName, lastName, email and password are required',
-        {
-          extensions: {
-            code: ApolloServerErrorCode.BAD_USER_INPUT,
-            http: { status: 400 },
-          },
+      if (!firstName || !lastName || !email || !password) {
+        throw new GraphQLError(
+          'Invalid input: firstName, lastName, email and password are required',
+          {
+            extensions: {
+              code: ApolloServerErrorCode.BAD_USER_INPUT,
+              http: { status: 400 },
+            },
+          }
+        );
+      }
+
+      const user = await ctx.db.user.create({
+        data: {
+          ...args.input,
+          firstName: firstName.trim(),
+          lastName: lastName.trim(),
+          email: email.toLowerCase().trim(),
+          password: await hashPassword(password.trim()),
+        },
+      });
+
+      const { accessToken } = createTokens({ user: user.id }, ctx);
+
+      return {
+        user,
+        accessToken,
+      };
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        if (error.code === 'P2002') {
+          throw new GraphQLError(
+            'Invalid input: This email already exists, please use another email address',
+            {
+              extensions: {
+                code: ApolloServerErrorCode.BAD_USER_INPUT,
+                http: { status: 409 },
+              },
+            }
+          );
         }
-      );
+      }
+      return null;
     }
-
-    const user = await ctx.db.user.create({
-      data: {
-        ...args.input,
-        firstName: firstName.trim(),
-        lastName: lastName.trim(),
-        email: email.toLowerCase().trim(),
-        password: await hashPassword(password.trim()),
-      },
-    });
-    const { accessToken } = createTokens({ user: user.id }, ctx);
-
-    return {
-      user,
-      accessToken,
-    };
   },
 });
 
 export const login = mutationField('login', {
-  type: nonNull('AuthPayload'),
+  type: nullable('AuthPayload'),
   args: {
     input: nonNull('LoginInput'),
   },
   resolve: async (_root, args, ctx) => {
-    const user = await ctx.db.user.findUnique({
-      where: {
-        email: args.input.email.toLowerCase(),
-      },
-    });
+    try {
+      const cookies = ctx.req.cookies;
+      console.log(`cookie available at login: ${JSON.stringify(cookies)}`);
 
-    let message = 'Invalid email: This user was not found';
-    if (!user)
-      throw new GraphQLError(message, {
-        extensions: {
-          code: 'UNAUTHENTICATED',
-          http: { status: 401 },
+      const { email, password } = args.input;
+
+      if (!email || !password) {
+        throw new GraphQLError(
+          'Invalid input: email and password are required',
+          {
+            extensions: {
+              code: ApolloServerErrorCode.BAD_USER_INPUT,
+              http: { status: 400 },
+            },
+          }
+        );
+      }
+
+      const user = await ctx.db.user.findUnique({
+        where: {
+          email: email.toLowerCase(),
         },
       });
 
-    message = 'Invalid input: user credentials do not match';
-    const matches = await comparePassword(args.input.password, user.password);
-    if (!matches)
-      throw new GraphQLError(message, {
-        extensions: {
-          code: 'UNAUTHENTICATED',
-          http: { status: 401 },
-        },
-      });
+      let message = 'Invalid email: This user was not found';
+      if (!user)
+        throw new GraphQLError(message, {
+          extensions: {
+            code: 'UNAUTHENTICATED',
+            http: { status: 401 },
+          },
+        });
 
-    const { accessToken } = createTokens({ user: user.id }, ctx);
+      message = 'Invalid input: user credentials do not match';
+      const matches = await comparePassword(args.input.password, user.password);
+      if (!matches)
+        throw new GraphQLError(message, {
+          extensions: {
+            code: 'UNAUTHENTICATED',
+            http: { status: 401 },
+          },
+        });
 
-    return {
-      user,
-      accessToken,
-    };
+      const { accessToken } = createTokens({ user: user.id }, ctx);
+
+      let refreshTokens = !cookies.jwt
+        ? user.tokenArray
+        : user.tokenArray.filter((rt) => rt !== cookies.jwt);
+
+      return {
+        user,
+        accessToken,
+      };
+    } catch (error) {
+      //! Make sure to test this scenario
+      throw error;
+    }
   },
 });
 
