@@ -13,6 +13,9 @@ export const RegisterInput = inputObjectType({
     t.nullable.string('countersign', {
       description: 'The reentered password to confirm that the passwords match',
     });
+    t.nullable.string('photo', {
+      description: `The image url generated from the user's email address`,
+    });
   },
 });
 
