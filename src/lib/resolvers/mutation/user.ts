@@ -7,6 +7,7 @@ import {
   createTokens,
   getErrorMessage,
   getRefreshCookie,
+  gravatar,
   hash,
   removeCookies,
 } from '../../utils';
@@ -41,6 +42,7 @@ export const register = mutationField('register', {
           lastName: lastName.trim(),
           email: email.toLowerCase().trim(),
           password: hashedPassword,
+          photo: gravatar(email),
         },
       });
 
