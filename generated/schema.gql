@@ -177,6 +177,9 @@ input RegisterInput {
   The password of the user. Must match the countersign i.e the reentered password
   """
   password: String!
+
+  """The image url generated from the user's email address"""
+  photo: String
 }
 
 """The current role of the user"""
