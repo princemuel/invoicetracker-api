@@ -7,6 +7,10 @@ const suid = new ShortUniqueId({
   dictionary: 'hex',
 });
 
+/**
+ * TODO: Refactor this controller and move frontend necessary code to frontend repo
+ */
+
 export const createInvoice = mutationField('createInvoice', {
   type: 'Invoice',
   args: { input: 'CreateInvoiceInput' },
@@ -22,20 +26,21 @@ export const createInvoice = mutationField('createInvoice', {
         });
       }
 
-      const nextState = produce(args.input, (draft) => {
+      const draft = produce(args.input, (draft) => {
         const dueTime = 86400 * 1000 * Number(draft?.paymentTerms || 1);
 
         draft.tag = suid.randomUUID(6);
         draft.paymentDue = new Date(Date.now() + dueTime).toISOString();
-        draft.items.forEach((item) => {
+
+        for (const item of draft.items) {
           item.id = new ShortUniqueId().randomUUID(32);
-        });
+        }
 
         draft.userId = user.id;
       });
 
       return ctx.db.invoice.create({
-        data: nextState,
+        data: draft,
       });
     } catch (error) {
       console.log(error);
@@ -43,6 +48,10 @@ export const createInvoice = mutationField('createInvoice', {
     }
   },
 });
+
+/**
+ * TODO: Refactor this controller and move frontend necessary code to frontend repo
+ */
 
 export const updateInvoice = mutationField('updateInvoice', {
   type: nullable('Invoice'),
@@ -61,14 +70,14 @@ export const updateInvoice = mutationField('updateInvoice', {
           },
         });
       }
-      const nextState = produce(args.input, (draft) => {
+      const draft = produce(args.input, (draft) => {
         const dueTime = 86400 * 1000 * Number(draft?.paymentTerms || 1);
         draft.paymentDue = new Date(Date.now() + dueTime).toISOString();
       });
 
       return ctx.db.invoice.update({
         where: { id: args.where.id },
-        data: nextState,
+        data: draft,
       });
     } catch (error) {
       console.log(error);
