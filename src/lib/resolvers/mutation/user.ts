@@ -3,11 +3,11 @@ import { Prisma } from '@prisma/client';
 import { GraphQLError } from 'graphql';
 import { mutationField, nonNull, nullable } from 'nexus';
 import {
-  comparePassword,
+  compare,
   createTokens,
   getErrorMessage,
   getRefreshCookie,
-  hashPassword,
+  hash,
   removeCookies,
 } from '../../utils';
 
@@ -32,13 +32,15 @@ export const register = mutationField('register', {
         );
       }
 
+      const hashedPassword = await hash(password.trim());
+
       const user = await ctx.db.user.create({
         data: {
           ...args.input,
           firstName: firstName.trim(),
           lastName: lastName.trim(),
           email: email.toLowerCase().trim(),
-          password: await hashPassword(password.trim()),
+          password: hashedPassword,
         },
       });
 
@@ -62,6 +64,7 @@ export const register = mutationField('register', {
           );
         }
       }
+      console.log(error);
       return null;
     }
   },
@@ -107,7 +110,7 @@ export const login = mutationField('login', {
         });
 
       message = 'Invalid input: user credentials do not match';
-      const matches = await comparePassword(args.input.password, user.password);
+      const matches = await compare(args.input.password, user.password);
       if (!matches)
         throw new GraphQLError(message, {
           extensions: {
@@ -117,10 +120,6 @@ export const login = mutationField('login', {
         });
 
       const { accessToken } = createTokens({ user: user.id }, ctx);
-
-      let refreshTokens = !cookies.jwt
-        ? user.tokenArray
-        : user.tokenArray.filter((rt) => rt !== cookies.jwt);
 
       return {
         user,
