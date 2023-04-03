@@ -55,11 +55,11 @@ export const verifyJwt = (token: string, key: Key) => {
   }
 };
 
-export async function comparePassword(data: string, encrypted: string) {
+export async function compare(data: string, encrypted: string) {
   return await bcrypt.compare(data, encrypted);
 }
 
-export async function hashPassword(data: string, rounds = 12) {
+export async function hash(data: string, rounds = 12) {
   const salt = await bcrypt.genSalt(rounds);
   return await bcrypt.hash(data, salt);
 }
