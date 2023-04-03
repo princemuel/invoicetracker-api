@@ -10,9 +10,6 @@ export const RegisterInput = inputObjectType({
       description:
         'The password of the user. Must match the countersign i.e the reentered password',
     });
-    t.nullable.string('countersign', {
-      description: 'The reentered password to confirm that the passwords match',
-    });
     t.nullable.string('photo', {
       description: `The image url generated from the user's email address`,
     });
