@@ -33,14 +33,11 @@ export const register = mutationField('register', {
         );
       }
 
-      const hashedPassword = await hash(password.trim());
+      const hashedPassword = await hash(password);
 
       const user = await ctx.db.user.create({
         data: {
           ...args.input,
-          firstName: firstName.trim(),
-          lastName: lastName.trim(),
-          email: email.toLowerCase().trim(),
           password: hashedPassword,
           photo: gravatar(email),
         },
@@ -80,7 +77,7 @@ export const login = mutationField('login', {
   resolve: async (_root, args, ctx) => {
     try {
       const cookies = ctx.req.cookies;
-      console.log(`cookie available at login: ${JSON.stringify(cookies)}`);
+      console.log(`cookies available at login: ${JSON.stringify(cookies)}`);
 
       const { email, password } = args.input;
 
@@ -112,8 +109,8 @@ export const login = mutationField('login', {
         });
 
       message = 'Invalid input: user credentials do not match';
-      const matches = await compare(args.input.password, user.password);
-      if (!matches)
+      const match = await compare(args.input.password, user.password);
+      if (!match)
         throw new GraphQLError(message, {
           extensions: {
             code: 'UNAUTHENTICATED',
@@ -149,6 +146,7 @@ export const refreshAuth = mutationField('refreshAuth', {
       throw new GraphQLError(message, {
         extensions: {
           code: 'FORBIDDEN',
+          http: { status: 403 },
         },
       });
 
