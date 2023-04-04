@@ -1,8 +1,10 @@
 import cors from 'cors';
+import { constants } from './environment';
 
 const isDev = process.env.NODE_ENV === 'development';
 const local = [/^http:\/\/localhost:\d{4}$/];
-const prod = [/^https:\/\/.*\.yourdomain\.com$/];
+// const prod = [/^https:\/\/.*\.yourdomain\.com$/];
+const prod = constants.BASE_URL;
 
 // Cross Orign Resource Sharing
 export const corsOptions = {
