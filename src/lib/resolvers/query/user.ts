@@ -1,6 +1,6 @@
 import { GraphQLError } from 'graphql';
 import { nullable, queryField } from 'nexus';
-import { createTokens, getRefreshCookie } from 'src/lib/utils';
+import { createTokens, getRefreshCookie } from '../../utils';
 
 export const user = queryField('user', {
   type: nullable('User'),
