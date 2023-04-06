@@ -15,6 +15,7 @@ import { constants, corsOptions } from './config';
 import { Context, createContext, schema } from './lib';
 
 const PORT = constants.PORT;
+const PATH = 'api';
 
 /** Starts the application */
 async function bootstrap() {
@@ -64,7 +65,7 @@ async function bootstrap() {
   await server.start();
 
   app.use(
-    '/graphql',
+    `/${PATH}`,
 
     // Handle options credentials check - before CORS!
     // and fetch cookies credentials requirement
@@ -91,7 +92,7 @@ async function bootstrap() {
     httpServer.listen({ port: PORT }, resolve)
   );
   if (process.env.NODE_ENV === 'development') {
-    console.log(`🚀 Server ready at http://localhost:${PORT}/graphql`);
+    console.log(`🚀 Server ready at http://localhost:${PORT}/${PATH}`);
   }
 }
 

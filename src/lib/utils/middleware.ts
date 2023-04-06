@@ -19,7 +19,6 @@ export const createUserContext = async (req: ExpressRequest) => {
 
     message = 'Invalid access token: No valid key or signature';
     const decoded = verifyJwt(token, 'AccessToken');
-    console.log('DECODED', decoded);
     if (!decoded) {
       throw new GraphQLError(message, {
         extensions: {
@@ -29,11 +28,21 @@ export const createUserContext = async (req: ExpressRequest) => {
       });
     }
 
+    message = 'Invalid User: This user does not exist';
     const user = await prisma.user.findUnique({
       where: {
         id: decoded?.user,
       },
     });
+
+    if (!user) {
+      throw new GraphQLError(message, {
+        extensions: {
+          code: 'FORBIDDEN',
+          http: { status: 403 },
+        },
+      });
+    }
 
     return user;
   } catch (error) {

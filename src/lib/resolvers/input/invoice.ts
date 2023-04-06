@@ -72,3 +72,11 @@ export const UniqueUserId = inputObjectType({
     t.nonNull.id('userId');
   },
 });
+
+export const UniqueIdWithUserId = inputObjectType({
+  name: 'UniqueIdWithUserId',
+  definition(t) {
+    t.nonNull.id('id');
+    t.nonNull.id('userId');
+  },
+});
