@@ -10,9 +10,7 @@ export const User = objectType({
     t.datetime('updatedAt', {
       description: `The exact time the user was updated`,
     });
-    t.string('firstName', { description: 'The first name of the user' });
-    t.string('lastName', { description: 'The last name of the user' });
-    t.nonNull.string('email', { description: 'The password of the user' });
+    t.nonNull.string('email', { description: 'The email of the user' });
     t.string('password', { description: 'The password of the user' });
     t.string('photo', { description: 'The avatar of the user' });
   },
