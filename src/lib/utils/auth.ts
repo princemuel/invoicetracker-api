@@ -8,8 +8,8 @@ import { JwtPayload } from './types';
 const createCookieOptions = (): CookieOptions => {
   const isProd = process.env.NODE_ENV === 'production';
   return {
-    // secure: true,
-    secure: isProd ? true : false,
+    secure: true,
+    // secure: isProd ? true : false,
     httpOnly: true,
     sameSite: 'none',
   };

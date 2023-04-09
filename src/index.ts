@@ -15,7 +15,7 @@ import { constants, corsOptions } from './config';
 import { Context, createContext, schema } from './lib';
 
 const PORT = constants.PORT;
-const PATH = 'api';
+const PATH = 'api/graphql';
 
 /** Starts the application */
 async function bootstrap() {
