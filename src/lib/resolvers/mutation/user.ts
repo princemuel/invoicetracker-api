@@ -6,7 +6,6 @@ import {
   compare,
   createTokens,
   getErrorMessage,
-  getRefreshCookie,
   gravatar,
   hash,
   removeCookies,
@@ -128,32 +127,6 @@ export const login = mutationField('login', {
       //! Make sure to test this scenario
       throw error;
     }
-  },
-});
-
-export const refreshAuth = mutationField('refreshAuth', {
-  type: 'RefreshPayload',
-  resolve: async (_root, _args, ctx) => {
-    const decoded = getRefreshCookie(ctx);
-    const user = await ctx.db.user.findUnique({
-      where: {
-        id: decoded.user,
-      },
-    });
-
-    const message = 'Invalid user: This user was not found';
-    if (!user)
-      throw new GraphQLError(message, {
-        extensions: {
-          code: 'FORBIDDEN',
-          http: { status: 403 },
-        },
-      });
-
-    const { accessToken } = createTokens({ user: user.id }, ctx);
-    return {
-      accessToken,
-    };
   },
 });
 
