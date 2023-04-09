@@ -18,9 +18,9 @@ export const register = mutationField('register', {
   },
   resolve: async (_root, args, ctx) => {
     try {
-      const { firstName, lastName, email, password } = args.input;
+      const { email, password } = args.input;
 
-      if (!firstName || !lastName || !email || !password) {
+      if (!email || !password) {
         throw new GraphQLError(
           'Invalid input: firstName, lastName, email and password are required',
           {
