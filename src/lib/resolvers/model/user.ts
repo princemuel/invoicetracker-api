@@ -3,11 +3,11 @@ import { enumType, objectType } from 'nexus';
 export const User = objectType({
   name: 'User',
   definition(t) {
-    t.nonNull.id('id', { description: 'Id of the user' });
-    t.nonNull.datetime('createdAt', {
+    t.nonNull.id('id', { description: 'The GUID for the User' });
+    t.nonNull.date('createdAt', {
       description: `The exact time the user was created`,
     });
-    t.datetime('updatedAt', {
+    t.date('updatedAt', {
       description: `The exact time the user was updated`,
     });
     t.nonNull.string('email', { description: 'The email of the user' });
