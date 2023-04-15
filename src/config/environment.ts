@@ -14,4 +14,11 @@ export const constants = {
 
   PORT: process.env.PORT || 4000,
   BASE_URL: process.env.BASE_URL || '',
+
+  SMTP: {
+    HOST: 'EMAIL_HOST',
+    PASS: 'EMAIL_PASS',
+    PORT: 'EMAIL_PORT',
+    USER: 'EMAIL_USER',
+  },
 } as const;

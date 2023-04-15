@@ -12,7 +12,6 @@
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "incremental": true,
-    "noErrorTruncation": true,
     "baseUrl": ".",
     "rootDir": ".",
     "outDir": "dist"

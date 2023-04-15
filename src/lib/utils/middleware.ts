@@ -3,9 +3,9 @@ import { prisma } from '../../client';
 import { verifyJwt } from './jwt';
 import { ExpressRequest } from './types';
 
-export const createUserContext = async (req: ExpressRequest) => {
+export const getAuthUser = async (req: ExpressRequest) => {
   try {
-    let message = 'Invalid user: This user is not authorised';
+    let message = 'Invalid User: This user is not logged in';
     const token = req.get('Authorization')?.split(' ')[1] || req.cookies?.token;
 
     if (!token) {
@@ -17,7 +17,7 @@ export const createUserContext = async (req: ExpressRequest) => {
       });
     }
 
-    message = 'Invalid access token: No valid key or signature';
+    message = 'Invalid Token: No valid keys or signatures';
     const decoded = verifyJwt(token, 'AccessToken');
     if (!decoded) {
       throw new GraphQLError(message, {
@@ -28,7 +28,7 @@ export const createUserContext = async (req: ExpressRequest) => {
       });
     }
 
-    message = 'Invalid User: This user does not exist';
+    message = 'Invalid Token: This token or session has expired';
     const user = await prisma.user.findUnique({
       where: {
         id: decoded?.user,

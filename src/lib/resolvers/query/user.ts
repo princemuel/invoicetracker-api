@@ -5,7 +5,7 @@ import { createTokens, getRefreshCookie } from '../../utils';
 export const user = queryField('user', {
   type: nullable('User'),
   resolve: async (root, args, ctx) => {
-    return await ctx.createUserContext(ctx.req);
+    return await ctx.getAuthUser(ctx.req);
   },
 });
 
@@ -20,6 +20,7 @@ export const refreshAuth = queryField('refreshAuth', {
     });
 
     const message = 'Invalid user: This user was not found';
+    //  if (!user || !user.verified) {
     if (!user)
       throw new GraphQLError(message, {
         extensions: {

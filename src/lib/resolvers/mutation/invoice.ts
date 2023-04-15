@@ -17,7 +17,7 @@ export const createInvoice = mutationField('createInvoice', {
   args: { input: 'CreateInvoiceInput' },
   resolve: async (_root, args, ctx) => {
     try {
-      const user = await ctx.createUserContext(ctx.req);
+      const user = await ctx.getAuthUser(ctx.req);
       if (!user) {
         throw new GraphQLError('Invalid User: User not authorised', {
           extensions: {
@@ -62,7 +62,7 @@ export const updateInvoice = mutationField('updateInvoice', {
   },
   resolve: async (_root, args, ctx) => {
     try {
-      const user = await ctx.createUserContext(ctx.req);
+      const user = await ctx.getAuthUser(ctx.req);
       if (!user) {
         throw new GraphQLError('Invalid User: User not authorised', {
           extensions: {
@@ -94,7 +94,7 @@ export const deleteInvoice = mutationField('deleteInvoice', {
   },
   resolve: async (_root, args, ctx) => {
     try {
-      const user = await ctx.createUserContext(ctx.req);
+      const user = await ctx.getAuthUser(ctx.req);
       if (!user) {
         throw new GraphQLError('Invalid User: User not authorised', {
           extensions: {

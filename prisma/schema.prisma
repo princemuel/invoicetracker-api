@@ -11,34 +11,47 @@ generator client {
 }
 
 model User {
-  id        String    @id @default(auto()) @map("_id") @db.ObjectId
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  email     String    @unique
-  password  String
-  photo     String?   @default("photo.jpg")
-  invoices  Invoice[]
+  id       String  @id @default(auto()) @map("_id") @db.ObjectId
+  email    String  @unique
+  password String
+  photo    String? @default("photo.jpg")
 
+  code     String?  @unique
+  verified Boolean? @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  invoices Invoice[]
+
+  @@index([email, code])
   @@map("users")
 }
 
 model Invoice {
-  id            String        @id @default(auto()) @map("_id") @db.ObjectId
-  createdAt     DateTime      @default(now())
-  updatedAt     DateTime      @updatedAt
-  tag           String
-  paymentDue    String
-  description   String
-  paymentTerms  Int
+  id  String @id @default(auto()) @map("_id") @db.ObjectId
+  tag String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  paymentDue   String
+  paymentTerms Int
+
+  description String
+  status      String? @default("PENDING")
+
+  senderAddress Address
+
   clientName    String
   clientEmail   String
-  status        String?       @default("PENDING")
-  senderAddress Address
   clientAddress Address
-  items         InvoiceItem[]
-  total         Float
-  user          User?         @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId        String?       @db.ObjectId
+
+  items InvoiceItem[]
+  total Float
+
+  user   User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String? @db.ObjectId
 
   @@map("invoices")
 }

@@ -72,7 +72,7 @@ export const createTokens = (payload: JwtPayload, context: Context) => {
 };
 
 export function getRefreshCookie({ req }: Context) {
-  let message = 'Invalid cookie: Could not find refresh token';
+  let message = 'Invalid Token: Could not refresh access token';
 
   const token = req?.cookies?.jwt;
   if (!token) {
@@ -84,7 +84,7 @@ export function getRefreshCookie({ req }: Context) {
     });
   }
 
-  message = 'Invalid cookie: No valid keys or signatures';
+  message = 'Invalid Token: No valid keys or signatures';
   const payload = verifyJwt(token, 'RefreshToken');
   if (!payload) {
     throw new GraphQLError(message, {
