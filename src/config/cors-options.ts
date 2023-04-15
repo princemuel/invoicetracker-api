@@ -15,7 +15,13 @@ export const corsOptions = {
   //     callback(new Error('Not allowed by CORS'));
   //   }
   // },
-  origin: isDev ? local : prod,
+  // origin: isDev ? local : prod,
+  origin: [
+    'https://studio.apollographql.com',
+    'http://localhost:8000',
+    'http://localhost:4000',
+    'http://localhost:3000',
+  ],
   // optionsSuccessStatus: 200,
   credentials: true,
 } as cors.CorsOptions;
