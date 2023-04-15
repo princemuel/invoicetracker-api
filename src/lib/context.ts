@@ -2,13 +2,13 @@ import type { ExpressContextFunctionArgument } from '@apollo/server/express4';
 import { PrismaClient, User } from '@prisma/client';
 import { prisma } from '../client';
 import type { ExpressRequest, ExpressResponse } from './utils';
-import { createUserContext } from './utils';
+import { getAuthUser } from './utils';
 
 export interface Context {
   req: ExpressRequest;
   res: ExpressResponse;
   db: PrismaClient;
-  createUserContext: (req: ExpressRequest) => Promise<User | null>;
+  getAuthUser: (req: ExpressRequest) => Promise<User | null>;
 }
 
 export async function createContext(
@@ -19,6 +19,6 @@ export async function createContext(
     req: express?.req,
     res: express?.res,
     db: prisma,
-    createUserContext,
+    getAuthUser,
   };
 }
