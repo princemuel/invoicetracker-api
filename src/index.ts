@@ -9,18 +9,21 @@ import {
 // import { ApolloServerPluginUsageReporting } from '@apollo/server/plugin/usageReporting';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
-import express from 'express';
+import express, { NextFunction, Request, Response } from 'express';
 import http from 'http';
+import morgan from 'morgan';
+import { prisma } from './client';
 import { constants, corsOptions } from './config';
 import { Context, createContext, schema } from './lib';
+import { AppError, getErrorMessage } from './lib/utils';
 
 const PORT = constants.PORT;
 const PATH = 'api/graphql';
+const app = express();
+const httpServer = http.createServer(app);
 
 /** Starts the application */
 async function bootstrap() {
-  const app = express();
-  const httpServer = http.createServer(app);
   const server = new ApolloServer<Context>({
     schema,
     plugins: [
@@ -88,13 +91,56 @@ async function bootstrap() {
     })
   );
 
+  if (process.env.NODE_ENV === 'development') {
+    app.use(morgan('dev'));
+  }
+
+  // logger
+
   await new Promise<void>((resolve) =>
     httpServer.listen({ port: PORT }, resolve)
   );
   if (process.env.NODE_ENV === 'development') {
-    console.log(`🚀 Server ready at http://localhost:${PORT}/${PATH}`);
+    console.log(`🔥 Server ready at http://localhost:${PORT}/${PATH} 🚀`);
   }
 }
 
 // Start server
-bootstrap().catch((e) => console.log(e));
+bootstrap()
+  .catch((error) => {
+    throw error;
+  })
+  .finally(async () => {
+    await prisma.$disconnect();
+  });
+
+// UNHANDLED ROUTES
+app.all('*', (req: Request, res: Response, next: NextFunction) => {
+  next(new AppError(404, `Route ${req.originalUrl} not found`));
+});
+
+// GLOBAL ERROR HANDLER
+app.use((error: AppError, req: Request, res: Response, next: NextFunction) => {
+  error.status = error.status || 'error';
+  error.code = error.code || 500;
+
+  res.status(error.code).json({
+    status: error.status,
+    message: error.message,
+  });
+});
+
+process.on('uncaughtException', (error) => {
+  console.error('UNCAUGHT EXCEPTION 🔥 Shutting down...');
+  console.error('Error🔥', getErrorMessage(error));
+  process.exit(1);
+});
+
+process.on('unhandledRejection', (error) => {
+  console.log('UNHANDLED REJECTION 🔥🔥 Shutting down...');
+  console.error('Error🔥', getErrorMessage(error));
+
+  httpServer.close(async () => {
+    process.exit(1);
+  });
+});
