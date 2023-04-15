@@ -11,6 +11,7 @@ export const RegisterInput = inputObjectType({
     t.nullable.string('photo', {
       description: `The image url generated from the user's email address`,
     });
+    t.nullable.string('code', { description: `The user's verification code` });
   },
 });
 

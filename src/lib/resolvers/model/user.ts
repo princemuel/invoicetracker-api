@@ -13,5 +13,9 @@ export const User = objectType({
     t.nonNull.string('email', { description: 'The email of the user' });
     t.string('password', { description: 'The password of the user' });
     t.string('photo', { description: 'The avatar of the user' });
+    t.string('code', { description: `The user's verification code` });
+    t.boolean('verified', {
+      description: 'Defines whether the user is verifed or not',
+    });
   },
 });
