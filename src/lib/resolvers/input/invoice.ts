@@ -10,7 +10,7 @@ export const CreateInvoiceInput = inputObjectType({
     t.nonNull.string('description');
     t.nonNull.string('clientName');
     t.nonNull.string('clientEmail');
-    t.nonNull.field('status', { type: 'Status' });
+    t.nonNull.string('status');
     t.nonNull.field('clientAddress', { type: 'AddressInput' });
     t.nonNull.field('senderAddress', { type: 'AddressInput' });
     t.nonNull.list.nonNull.field('items', { type: 'InvoiceItemInput' });
@@ -26,7 +26,7 @@ export const UpdateInvoiceInput = inputObjectType({
     t.nonNull.string('description');
     t.nonNull.string('clientName');
     t.nonNull.string('clientEmail');
-    t.nonNull.field('status', { type: 'Status' });
+    t.nonNull.string('status');
     t.nonNull.field('clientAddress', { type: 'AddressInput' });
     t.nonNull.field('senderAddress', { type: 'AddressInput' });
     t.nonNull.list.nonNull.field('items', { type: 'InvoiceItemInput' });

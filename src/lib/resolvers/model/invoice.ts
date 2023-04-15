@@ -1,15 +1,15 @@
-import { enumType, objectType } from 'nexus';
+import { objectType } from 'nexus';
 
 export const Invoice = objectType({
   name: 'Invoice',
   description: `The object containing metadata about the invoice e.g. items purchased, when the payment is due, client address information, the current status, et cetera`,
   definition(t) {
-    t.id('id', { description: 'Id of the invoice' });
-    t.id('userId', { description: "The id of the invoice's owner" });
-    t.datetime('createdAt', {
+    t.id('id', { description: 'The GUID for the Invoice' });
+    t.id('userId', { description: "The GUID of the invoice's issuer" });
+    t.date('createdAt', {
       description: `The exact time the invoice was created`,
     });
-    t.datetime('updatedAt', {
+    t.date('updatedAt', {
       description: `The exact time the invoice was updated`,
     });
     t.string('paymentDue', {
@@ -30,9 +30,8 @@ export const Invoice = objectType({
     t.string('clientEmail', {
       description: 'The email of the person receiving the invoice',
     });
-    t.field('status', {
-      type: 'Status',
-      description: 'Current payment status of the items listed in the invoice',
+    t.string('status', {
+      description: 'The current status of the invoice',
     });
     t.field('senderAddress', {
       type: 'Address',
@@ -89,10 +88,4 @@ export const InvoiceItem = objectType({
         'The price of this item multiplied by the total number of this item purchased',
     });
   },
-});
-
-export const Status = enumType({
-  name: 'Status',
-  description: 'The current status of the invoice',
-  members: ['DRAFT', 'PENDING', 'PAID'],
 });

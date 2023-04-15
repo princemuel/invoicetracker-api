@@ -2,6 +2,7 @@ import { GraphQLError } from 'graphql';
 import produce from 'immer';
 import { mutationField, nullable } from 'nexus';
 import ShortUniqueId from 'short-unique-id';
+import { v4 as uuid } from 'uuid';
 
 const suid = new ShortUniqueId({
   dictionary: 'hex',
@@ -32,8 +33,8 @@ export const createInvoice = mutationField('createInvoice', {
         draft.tag = suid.randomUUID(6);
         draft.paymentDue = new Date(Date.now() + dueTime).toISOString();
 
-        for (const item of draft.items) {
-          item.id = new ShortUniqueId().randomUUID(32);
+        for (const item of draft?.items) {
+          item.id = uuid();
         }
 
         draft.userId = user.id;

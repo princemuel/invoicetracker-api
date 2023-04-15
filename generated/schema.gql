@@ -47,7 +47,7 @@ input CreateInvoiceInput {
   paymentDue: String!
   paymentTerms: Int!
   senderAddress: AddressInput!
-  status: Status!
+  status: String!
   tag: String!
   total: Float!
   userId: ID
@@ -77,7 +77,7 @@ type Invoice {
   """A high level description of the items listed in the invoice"""
   description: String
 
-  """Id of the invoice"""
+  """The GUID for the Invoice"""
   id: ID
 
   """The items listed in the invoice"""
@@ -94,8 +94,8 @@ type Invoice {
   """The address of the person sending the invoice"""
   senderAddress: Address
 
-  """Current payment status of the items listed in the invoice"""
-  status: Status
+  """The current status of the invoice"""
+  status: String
 
   """Unique id sequence used to tag the invoice"""
   tag: String
@@ -106,7 +106,7 @@ type Invoice {
   """The exact time the invoice was updated"""
   updatedAt: DateTime
 
-  """The id of the invoice's owner"""
+  """The GUID of the invoice's issuer"""
   userId: ID
 }
 
@@ -183,19 +183,6 @@ input RegisterInput {
   photo: String
 }
 
-"""The current role of the user"""
-enum Role {
-  ADMIN
-  USER
-}
-
-"""The current status of the invoice"""
-enum Status {
-  DRAFT
-  PAID
-  PENDING
-}
-
 input UniqueIdInput {
   id: ID!
 }
@@ -218,7 +205,7 @@ input UpdateInvoiceInput {
   paymentDue: String!
   paymentTerms: Int!
   senderAddress: AddressInput!
-  status: Status!
+  status: String!
   total: Float!
 }
 
@@ -229,7 +216,7 @@ type User {
   """The email of the user"""
   email: String!
 
-  """Id of the user"""
+  """The GUID for the User"""
   id: ID!
 
   """The password of the user"""
