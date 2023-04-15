@@ -1,10 +1,12 @@
 import { ApolloServerErrorCode } from '@apollo/server/errors';
 import { Prisma } from '@prisma/client';
 import { GraphQLError } from 'graphql';
+import produce from 'immer';
 import { mutationField, nonNull, nullable } from 'nexus';
 import {
   compare,
   createTokens,
+  createVerificationCode,
   getErrorMessage,
   gravatar,
   hash,
@@ -32,14 +34,17 @@ export const register = mutationField('register', {
         );
       }
 
-      const hashedPassword = await hash(password);
+      const hashed = await hash(password);
+
+      const draft = produce(args.input, (draft) => {
+        draft.email = email.toLowerCase();
+        draft.password = hashed;
+        draft.photo = gravatar(email);
+        draft.code = createVerificationCode();
+      });
 
       const user = await ctx.db.user.create({
-        data: {
-          ...args.input,
-          password: hashedPassword,
-          photo: gravatar(email),
-        },
+        data: draft,
       });
 
       const { accessToken } = createTokens({ user: user.id }, ctx);
@@ -52,7 +57,7 @@ export const register = mutationField('register', {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         if (error.code === 'P2002') {
           throw new GraphQLError(
-            'Invalid input: This email already exists, please use another email address',
+            'Invalid Input: This email already exists, please use another email address',
             {
               extensions: {
                 code: ApolloServerErrorCode.BAD_USER_INPUT,
@@ -75,12 +80,12 @@ export const login = mutationField('login', {
   },
   resolve: async (_root, args, ctx) => {
     try {
-      const cookies = ctx.req.cookies;
-      console.log(`cookies available at login: ${JSON.stringify(cookies)}`);
+      // const cookies = ctx.req.cookies;
+      // console.log(`cookies available at login: ${JSON.stringify(cookies)}`);
 
       const { email, password } = args.input;
 
-      if (!email || !password) {
+      if (!email || !password)
         throw new GraphQLError(
           'Invalid input: email and password are required',
           {
@@ -90,7 +95,6 @@ export const login = mutationField('login', {
             },
           }
         );
-      }
 
       const user = await ctx.db.user.findUnique({
         where: {
@@ -98,7 +102,8 @@ export const login = mutationField('login', {
         },
       });
 
-      let message = 'Invalid email: This user was not found';
+      let message = 'Invalid Email: This user was not found';
+      //  if (!user || !user.verified) {
       if (!user)
         throw new GraphQLError(message, {
           extensions: {
@@ -107,7 +112,7 @@ export const login = mutationField('login', {
           },
         });
 
-      message = 'Invalid input: user credentials do not match';
+      message = 'Invalid Password: The user credentials do not match';
       const match = await compare(args.input.password, user.password);
       if (!match)
         throw new GraphQLError(message, {
