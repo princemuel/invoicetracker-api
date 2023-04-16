@@ -91,11 +91,29 @@ async function bootstrap() {
     })
   );
 
+  // UNHANDLED ROUTES
+  app.all('*', (req: Request, res: Response, next: NextFunction) => {
+    next(new AppError(404, `Route ${req.originalUrl} was not found`));
+  });
+
+  // GLOBAL ERROR HANDLER
+  app.use(
+    (error: AppError, req: Request, res: Response, next: NextFunction) => {
+      error.status = error.status || 'error';
+      error.statusCode = error.statusCode || 500;
+
+      res.status(error.statusCode).json({
+        code: error.statusCode,
+        status: error.status,
+        message: error.message,
+      });
+    }
+  );
+
+  // logger
   if (process.env.NODE_ENV === 'development') {
     app.use(morgan('dev'));
   }
-
-  // logger
 
   await new Promise<void>((resolve) =>
     httpServer.listen({ port: PORT }, resolve)
@@ -104,31 +122,6 @@ async function bootstrap() {
     console.log(`🔥 Server ready at http://localhost:${PORT}/${PATH} 🚀`);
   }
 }
-
-// Start server
-bootstrap()
-  .catch((error) => {
-    throw error;
-  })
-  .finally(async () => {
-    await prisma.$disconnect();
-  });
-
-// UNHANDLED ROUTES
-app.all('*', (req: Request, res: Response, next: NextFunction) => {
-  next(new AppError(404, `Route ${req.originalUrl} not found`));
-});
-
-// GLOBAL ERROR HANDLER
-app.use((error: AppError, req: Request, res: Response, next: NextFunction) => {
-  error.status = error.status || 'error';
-  error.statusCode = error.statusCode || 500;
-
-  res.status(error.statusCode).json({
-    status: error.status,
-    message: error.message,
-  });
-});
 
 process.on('uncaughtException', (error) => {
   console.error('UNCAUGHT EXCEPTION 🔥 Shutting down...');
@@ -144,3 +137,12 @@ process.on('unhandledRejection', (error) => {
     process.exit(1);
   });
 });
+
+// Start server
+bootstrap()
+  .catch((error) => {
+    throw error;
+  })
+  .finally(async () => {
+    await prisma.$disconnect();
+  });
