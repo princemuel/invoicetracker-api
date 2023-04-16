@@ -17,7 +17,7 @@ export const createInvoice = mutationField('createInvoice', {
   args: { input: 'CreateInvoiceInput' },
   resolve: async (_root, args, ctx) => {
     try {
-      const user = await ctx.getAuthUser(ctx.req);
+      const user = ctx.res.locals.user;
       if (!user) {
         throw new GraphQLError('Invalid User: User not authorised', {
           extensions: {
@@ -40,7 +40,7 @@ export const createInvoice = mutationField('createInvoice', {
         draft.userId = user.id;
       });
 
-      return ctx.db.invoice.create({
+      return await ctx.db.invoice.create({
         data: draft,
       });
     } catch (error) {
@@ -62,7 +62,7 @@ export const updateInvoice = mutationField('updateInvoice', {
   },
   resolve: async (_root, args, ctx) => {
     try {
-      const user = await ctx.getAuthUser(ctx.req);
+      const user = ctx.res.locals.user;
       if (!user) {
         throw new GraphQLError('Invalid User: User not authorised', {
           extensions: {
@@ -76,7 +76,7 @@ export const updateInvoice = mutationField('updateInvoice', {
         draft.paymentDue = new Date(Date.now() + dueTime).toISOString();
       });
 
-      return ctx.db.invoice.update({
+      return await ctx.db.invoice.update({
         where: { id: args.where.id },
         data: draft,
       });
@@ -94,7 +94,7 @@ export const deleteInvoice = mutationField('deleteInvoice', {
   },
   resolve: async (_root, args, ctx) => {
     try {
-      const user = await ctx.getAuthUser(ctx.req);
+      const user = ctx.res.locals.user;
       if (!user) {
         throw new GraphQLError('Invalid User: User not authorised', {
           extensions: {
@@ -104,7 +104,7 @@ export const deleteInvoice = mutationField('deleteInvoice', {
         });
       }
 
-      return ctx.db.invoice.delete({
+      return await ctx.db.invoice.delete({
         where: args.where,
       });
     } catch (error) {
