@@ -1,4 +1,3 @@
-export * from './app-error';
 export * from './auth';
 export * from './crypto-util';
 export * from './error-handler';

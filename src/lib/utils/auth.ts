@@ -99,6 +99,7 @@ export function getRefreshCookie({ req }: Context) {
 }
 
 export const removeCookies = ({ res }: Context) => {
+  res.locals.user = null;
   res.clearCookie('token', { ...cookieOptions });
   res.clearCookie('jwt', { ...cookieOptions });
 };
