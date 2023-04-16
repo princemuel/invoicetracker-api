@@ -122,9 +122,9 @@ app.all('*', (req: Request, res: Response, next: NextFunction) => {
 // GLOBAL ERROR HANDLER
 app.use((error: AppError, req: Request, res: Response, next: NextFunction) => {
   error.status = error.status || 'error';
-  error.code = error.code || 500;
+  error.statusCode = error.statusCode || 500;
 
-  res.status(error.code).json({
+  res.status(error.statusCode).json({
     status: error.status,
     message: error.message,
   });

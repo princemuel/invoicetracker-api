@@ -48,6 +48,7 @@ export const register = mutationField('register', {
       });
 
       const { accessToken } = createTokens({ user: user.id }, ctx);
+      ctx.res.locals.user = user;
 
       return {
         user,
@@ -84,7 +85,6 @@ export const login = mutationField('login', {
       // console.log(`cookies available at login: ${JSON.stringify(cookies)}`);
 
       const { email, password } = args.input;
-
       if (!email || !password)
         throw new GraphQLError(
           'Invalid input: email and password are required',
@@ -123,6 +123,7 @@ export const login = mutationField('login', {
         });
 
       const { accessToken } = createTokens({ user: user.id }, ctx);
+      ctx.res.locals.user = user;
 
       return {
         user,
@@ -130,7 +131,8 @@ export const login = mutationField('login', {
       };
     } catch (error) {
       //! Make sure to test this scenario
-      throw error;
+      console.log(error);
+      return null;
     }
   },
 });

@@ -5,7 +5,7 @@ export const invoices = queryField('invoices', {
   type: nonNull(list('Invoice')),
   resolve: async (root, args, ctx) => {
     try {
-      const user = await ctx.getAuthUser(ctx.req);
+      const user = ctx.res.locals.user;
       if (!user) {
         throw new GraphQLError('Invalid User: User not authorised', {
           extensions: {
@@ -14,7 +14,8 @@ export const invoices = queryField('invoices', {
           },
         });
       }
-      return ctx.db.invoice.findMany({
+
+      return await ctx.db.invoice.findMany({
         where: {
           userId: user.id,
         },
@@ -33,9 +34,7 @@ export const invoice = queryField('invoice', {
   },
   resolve: async (root, args, ctx) => {
     try {
-      await ctx.getAuthUser(ctx.req);
-
-      return ctx.db.invoice.findUniqueOrThrow({
+      return await ctx.db.invoice.findUniqueOrThrow({
         where: {
           id: args.where.id,
         },
