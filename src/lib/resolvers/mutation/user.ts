@@ -47,7 +47,8 @@ export const register = mutationField('register', {
         data: draft,
       });
 
-      const { accessToken } = createTokens({ user: user.id }, ctx);
+      const data = { email: user.email, photo: user.photo, sub: user.id };
+      const { accessToken } = createTokens(data, ctx);
       ctx.res.locals.user = user;
 
       return {
@@ -122,7 +123,8 @@ export const login = mutationField('login', {
           },
         });
 
-      const { accessToken } = createTokens({ user: user.id }, ctx);
+      const data = { email: user.email, photo: user.photo, sub: user.id };
+      const { accessToken } = createTokens(data, ctx);
       ctx.res.locals.user = user;
 
       return {

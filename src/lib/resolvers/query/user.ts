@@ -29,7 +29,8 @@ export const refreshAuth = queryField('refreshAuth', {
         },
       });
 
-    const { accessToken } = createTokens({ user: user.id }, ctx);
+    const data = { email: user.email, photo: user.photo, sub: user.id };
+    const { accessToken } = createTokens(data, ctx);
     return {
       accessToken,
     };

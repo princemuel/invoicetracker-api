@@ -5,8 +5,8 @@ import type { JwtPayload } from './types';
 
 type Key = 'AccessToken' | 'RefreshToken';
 
-const jwtOptions = {
-  issuer: 'Invoice Mailer',
+const jwtOptions: SignOptions = {
+  issuer: 'https://invoicemailer.onrender.com',
   audience: constants.BASE_URL,
 };
 /**

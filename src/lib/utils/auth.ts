@@ -19,14 +19,12 @@ const cookieOptions = createCookieOptions();
 
 const createAccessToken = (payload: JwtPayload) => {
   return signJwt(payload, 'AccessToken', {
-    subject: payload?.user,
     expiresIn: `${constants.JWT_ACCESS_EXPIRATION}m`,
   });
 };
 
 const createRefreshToken = (payload: JwtPayload) => {
   return signJwt(payload, 'RefreshToken', {
-    subject: payload?.user,
     expiresIn: `${constants.JWT_REFRESH_EXPIRATION}d`,
   });
 };
