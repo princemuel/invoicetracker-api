@@ -17,5 +17,7 @@ export interface ExpressResponse extends Response {
   locals: { user: User | null };
 }
 export interface JwtPayload extends jwt.JwtPayload {
+  email: string;
+  photo: string | null;
   sub: string;
 }
