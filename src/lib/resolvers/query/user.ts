@@ -15,7 +15,7 @@ export const refreshAuth = queryField('refreshAuth', {
     const decoded = getRefreshCookie(ctx);
     const user = await ctx.db.user.findUnique({
       where: {
-        id: decoded.user,
+        id: decoded.sub,
       },
     });
 
