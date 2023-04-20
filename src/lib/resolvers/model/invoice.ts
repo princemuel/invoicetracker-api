@@ -12,6 +12,9 @@ export const Invoice = objectType({
     t.date('updatedAt', {
       description: `The exact time the invoice was updated`,
     });
+    t.date('issueDate', {
+      description: `The exact date and time the invoice was issued in ISO8601`,
+    });
     t.string('paymentDue', {
       description: `When the payment of the items listed in the invoice is due`,
     });

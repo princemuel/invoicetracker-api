@@ -2,7 +2,6 @@ import { GraphQLError } from 'graphql';
 import produce from 'immer';
 import { mutationField, nullable } from 'nexus';
 import ShortUniqueId from 'short-unique-id';
-import { v4 as uuid } from 'uuid';
 
 const suid = new ShortUniqueId({
   dictionary: 'hex',
@@ -27,21 +26,12 @@ export const createInvoice = mutationField('createInvoice', {
         });
       }
 
-      const draft = produce(args.input, (draft) => {
-        const dueTime = 86400 * 1000 * Number(draft?.paymentTerms || 1);
-
+      const invoice = produce(args.input, (draft) => {
         draft.tag = suid.randomUUID(6);
-        draft.paymentDue = new Date(Date.now() + dueTime).toISOString();
-
-        for (const item of draft?.items) {
-          item.id = uuid();
-        }
-
-        draft.userId = user.id;
       });
 
       return await ctx.db.invoice.create({
-        data: draft,
+        data: invoice,
       });
     } catch (error) {
       console.log(error);
@@ -71,14 +61,10 @@ export const updateInvoice = mutationField('updateInvoice', {
           },
         });
       }
-      const draft = produce(args.input, (draft) => {
-        const dueTime = 86400 * 1000 * Number(draft?.paymentTerms || 1);
-        draft.paymentDue = new Date(Date.now() + dueTime).toISOString();
-      });
 
       return await ctx.db.invoice.update({
         where: { id: args.where.id },
-        data: draft,
+        data: args.input,
       });
     } catch (error) {
       console.log(error);
