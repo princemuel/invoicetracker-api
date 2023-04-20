@@ -7,6 +7,9 @@ export const CreateInvoiceInput = inputObjectType({
     t.nonNull.string('tag');
     t.nonNull.string('paymentDue');
     t.nonNull.int('paymentTerms');
+    t.nonNull.date('issueDate', {
+      description: `The exact date and time the invoice was issued in ISO8601`,
+    });
     t.nonNull.string('description');
     t.nonNull.string('clientName');
     t.nonNull.string('clientEmail');
