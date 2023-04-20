@@ -31,7 +31,7 @@ export const getAuthUser = async (req: ExpressRequest) => {
     message = 'Invalid Token: This token or session has expired';
     const user = await prisma.user.findUnique({
       where: {
-        id: decoded?.user,
+        id: decoded?.sub,
       },
     });
 
