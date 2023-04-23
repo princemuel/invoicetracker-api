@@ -9,7 +9,7 @@ export const permissions = shield({
   Mutation: {
     '*': rules.isAuthenticated,
     login: allow,
-    register: allow,
     logout: allow,
+    register: allow,
   },
 });
