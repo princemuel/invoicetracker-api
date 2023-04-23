@@ -18,13 +18,13 @@ const createCookieOptions = (): CookieOptions => {
 const cookieOptions = createCookieOptions();
 
 const createAccessToken = (payload: JwtPayload) => {
-  return signJwt(payload, 'AccessToken', {
+  return signJwt(payload, {
     expiresIn: `${constants.JWT_ACCESS_EXPIRATION}m`,
   });
 };
 
 const createRefreshToken = (payload: JwtPayload) => {
-  return signJwt(payload, 'RefreshToken', {
+  return signJwt(payload, {
     expiresIn: `${constants.JWT_REFRESH_EXPIRATION}d`,
   });
 };
@@ -83,7 +83,7 @@ export function getRefreshCookie({ req }: Context) {
   }
 
   message = 'Invalid Token: No valid keys or signatures';
-  const payload = verifyJwt(token, 'RefreshToken');
+  const payload = verifyJwt(token);
   if (!payload) {
     throw new GraphQLError(message, {
       extensions: {

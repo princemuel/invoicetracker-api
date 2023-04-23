@@ -16,16 +16,8 @@ const jwtOptions: SignOptions = {
  * @param options SignOptions
  * @returns string
  */
-export const signJwt = (
-  payload: JwtPayload,
-  key: Key,
-  options?: SignOptions
-) => {
-  const accessToken = constants.JWT_ACCESS_SECRET;
-  const refreshToken = constants.JWT_REFRESH_SECRET;
-
-  const secret = key === 'AccessToken' ? accessToken : refreshToken;
-
+export const signJwt = (payload: JwtPayload, options?: SignOptions) => {
+  const secret = constants.JWT_PRIVATE_KEY;
   return jwt.sign(payload, secret, {
     ...(options ?? {}),
     ...jwtOptions,
@@ -39,18 +31,13 @@ export const signJwt = (
  * @param key AccessToken OR RefreshToken
  * @returns JwtPayload | null
  */
-export const verifyJwt = (token: string, key: Key) => {
-  const accessToken = constants.JWT_ACCESS_PUBLIC;
-  const refreshToken = constants.JWT_REFRESH_PUBLIC;
-
-  const secret = key === 'AccessToken' ? accessToken : refreshToken;
-
+export const verifyJwt = (token: string) => {
+  const secret = constants.JWT_PUBLIC_KEY;
   try {
     return jwt.verify(token, secret, {
       algorithms: ['RS256'],
     }) as JwtPayload;
   } catch (error) {
-    console.log('VERIFICATION ERROR', error);
     return null;
   }
 };

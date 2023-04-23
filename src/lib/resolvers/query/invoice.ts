@@ -5,7 +5,7 @@ export const invoices = queryField('invoices', {
   type: nonNull(list('Invoice')),
   resolve: async (root, args, ctx) => {
     try {
-      const user = ctx.res.locals.user;
+      const user = await ctx.getAuthUser(ctx.req);
       if (!user) {
         throw new GraphQLError('Invalid User: User not authorised', {
           extensions: {
@@ -34,6 +34,16 @@ export const invoice = queryField('invoice', {
   },
   resolve: async (root, args, ctx) => {
     try {
+      const user = await ctx.getAuthUser(ctx.req);
+      if (!user) {
+        throw new GraphQLError('Invalid User: User not authorised', {
+          extensions: {
+            code: 'FORBIDDEN',
+            http: { status: 403 },
+          },
+        });
+      }
+
       return await ctx.db.invoice.findUniqueOrThrow({
         where: {
           id: args.where.id,
