@@ -6,14 +6,14 @@ export const AuthPayload = objectType({
     t.nonNull.field('user', {
       type: 'User',
     });
-    t.nonNull.string('accessToken');
+    t.nonNull.string('token');
   },
 });
 
 export const RefreshPayload = objectType({
   name: 'RefreshPayload',
   definition(t) {
-    t.nonNull.string('accessToken');
+    t.nonNull.string('token');
   },
 });
 

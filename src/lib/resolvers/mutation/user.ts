@@ -53,7 +53,7 @@ export const register = mutationField('register', {
 
       return {
         user,
-        accessToken,
+        token: accessToken,
       };
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
@@ -129,7 +129,7 @@ export const login = mutationField('login', {
 
       return {
         user,
-        accessToken,
+        token: accessToken,
       };
     } catch (error) {
       //! Make sure to test this scenario
