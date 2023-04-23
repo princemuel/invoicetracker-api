@@ -18,7 +18,7 @@ export const getAuthUser = async (req: ExpressRequest) => {
     }
 
     message = 'Invalid Token: No valid keys or signatures';
-    const decoded = verifyJwt(token, 'AccessToken');
+    const decoded = verifyJwt(token);
     if (!decoded) {
       throw new GraphQLError(message, {
         extensions: {
