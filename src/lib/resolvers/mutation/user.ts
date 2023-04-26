@@ -7,6 +7,7 @@ import {
   compare,
   createTokens,
   createVerificationCode,
+  encodeAuthUser,
   getErrorMessage,
   gravatar,
   hash,
@@ -47,9 +48,8 @@ export const register = mutationField('register', {
         data: draft,
       });
 
-      const data = { email: user.email, photo: user.photo, sub: user.id };
+      const data = encodeAuthUser(user);
       const { accessToken } = createTokens(data, ctx);
-      ctx.res.locals.user = user;
 
       return {
         user,
@@ -123,9 +123,8 @@ export const login = mutationField('login', {
           },
         });
 
-      const data = { email: user.email, photo: user.photo, sub: user.id };
+      const data = encodeAuthUser(user);
       const { accessToken } = createTokens(data, ctx);
-      ctx.res.locals.user = user;
 
       return {
         user,
