@@ -69,7 +69,7 @@ export const createTokens = (payload: JwtPayload, context: Context) => {
   };
 };
 
-export function encodeUser(user: User) {
+export function encodeAuthUser(user: User) {
   return { email: user.email, photo: user.photo, sub: user.id };
 }
 
