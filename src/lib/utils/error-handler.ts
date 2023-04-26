@@ -11,16 +11,18 @@ export class AppError extends Error {
   }
 }
 
-type ErrorWithMessage = {
+interface ErrorWithMessage {
   message: string;
-};
-type ErrorDataWithMessage = { data: { message: string } };
+}
+interface ErrorDataWithMessage {
+  data: { message: string };
+}
 
-export function getErrorMessage(error: unknown) {
+export function getErrorMessage<T extends unknown>(error: T) {
   return toErrorWithMessage(error).message;
 }
 
-function toErrorWithMessage(error: unknown): ErrorWithMessage {
+function toErrorWithMessage<T extends unknown>(error: T): ErrorWithMessage {
   if (isErrorWithMessage(error)) return error;
   if (isErrorDataMessage(error)) return error.data;
 
