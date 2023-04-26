@@ -20,3 +20,15 @@ export const writeFile = (
 ) => {
   return fs.writeFileSync(path.join(process.cwd(), filePath), data, options);
 };
+
+export const parseBuffer = (
+  data:
+    | WithImplicitCoercion<string>
+    | {
+        [Symbol.toPrimitive](hint: 'string'): string;
+      },
+  from?: BufferEncoding | undefined,
+  to?: BufferEncoding | undefined
+) => {
+  return Buffer.from(data, from).toString(to);
+};

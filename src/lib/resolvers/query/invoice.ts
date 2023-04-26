@@ -21,7 +21,6 @@ export const invoices = queryField('invoices', {
         },
       });
     } catch (error) {
-      console.log(error);
       return [];
     }
   },
@@ -50,7 +49,6 @@ export const invoice = queryField('invoice', {
         },
       });
     } catch (error) {
-      console.log(error);
       return null;
     }
   },

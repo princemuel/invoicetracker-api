@@ -1,14 +1,15 @@
 import * as bcrypt from 'bcrypt';
 import jwt, { SignOptions } from 'jsonwebtoken';
-import { constants } from '../../config';
+import { constants } from '../../config/environment';
 import type { JwtPayload } from './types';
 
 type Key = 'AccessToken' | 'RefreshToken';
 
 const jwtOptions: SignOptions = {
-  issuer: 'https://invoicemailer.onrender.com',
-  audience: constants.BASE_URL,
+  issuer: constants.SERVER_URL,
+  audience: constants.SERVER_URL,
 };
+
 /**
  *
  * @param payload JwtPayload

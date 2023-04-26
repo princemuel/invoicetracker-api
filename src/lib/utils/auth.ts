@@ -1,8 +1,8 @@
+import { User } from '@prisma/client';
 import type { CookieOptions } from 'express';
-import { GraphQLError } from 'graphql';
 import { constants } from '../../config/environment';
 import type { Context } from '../context';
-import { signJwt, verifyJwt } from './jwt';
+import { signJwt } from './jwt';
 import { JwtPayload } from './types';
 
 const createCookieOptions = (): CookieOptions => {
@@ -69,31 +69,8 @@ export const createTokens = (payload: JwtPayload, context: Context) => {
   };
 };
 
-export function getRefreshCookie({ req }: Context) {
-  let message = 'Invalid Token: Could not refresh access token';
-
-  const token = req?.cookies?.jwt;
-  if (!token) {
-    throw new GraphQLError(message, {
-      extensions: {
-        code: 'FORBIDDEN',
-        http: { status: 403 },
-      },
-    });
-  }
-
-  message = 'Invalid Token: No valid keys or signatures';
-  const payload = verifyJwt(token);
-  if (!payload) {
-    throw new GraphQLError(message, {
-      extensions: {
-        code: 'FORBIDDEN',
-        http: { status: 403 },
-      },
-    });
-  }
-
-  return payload;
+export function encodeAuthUser(user: User) {
+  return { email: user.email, photo: user.photo, sub: user.id };
 }
 
 export const removeCookies = ({ res }: Context) => {

@@ -34,7 +34,6 @@ export const createInvoice = mutationField('createInvoice', {
         data: invoice,
       });
     } catch (error) {
-      console.log(error);
       return null;
     }
   },
@@ -67,7 +66,6 @@ export const updateInvoice = mutationField('updateInvoice', {
         data: args.input,
       });
     } catch (error) {
-      console.log(error);
       return null;
     }
   },
@@ -94,7 +92,6 @@ export const deleteInvoice = mutationField('deleteInvoice', {
         where: args.where,
       });
     } catch (error) {
-      console.log(error);
       return null;
     }
   },
