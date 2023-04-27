@@ -5,7 +5,7 @@ import cors from 'cors';
 // const prod = constants.SERVER_URL;
 
 const allowedOrigins = [
-  'https://pm-invoice.vercel.app/',
+  'https://pm-invoice.vercel.app',
   'https://studio.apollographql.com',
   'http://localhost:4000',
   'http://localhost:3000',
