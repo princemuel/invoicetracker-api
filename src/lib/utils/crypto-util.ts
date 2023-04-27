@@ -23,7 +23,7 @@ function createHash(
   return crypto.createHash(algorithm, options).update(data).digest(encoding);
 }
 
-(function () {
+export function genKeyPair() {
   crypto.generateKeyPair(
     'rsa',
     {
@@ -47,4 +47,4 @@ function createHash(
       writeFile('private.pem', privateKey);
     }
   );
-})();
+}
