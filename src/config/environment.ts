@@ -17,12 +17,14 @@ export const constants = {
   // JWT_PUBLIC_KEY: readFile('public.pem'),
   // JWT_PRIVATE_KEY: readFile('private.pem'),
 
-  JWT_PUBLIC_KEY: !(process.env.NODE_ENV === 'production')
-    ? readFile('public.pem')
-    : process.env.JWT_PUBLIC_KEY!,
-  JWT_PRIVATE_KEY: !(process.env.NODE_ENV === 'production')
-    ? readFile('private.pem')
-    : process.env.JWT_PRIVATE_KEY!,
+  JWT_PUBLIC_KEY:
+    process.env.NODE_ENV !== 'production'
+      ? readFile('public.pem')
+      : process.env.JWT_PUBLIC_KEY!,
+  JWT_PRIVATE_KEY:
+    process.env.NODE_ENV !== 'production'
+      ? readFile('private.pem')
+      : process.env.JWT_PRIVATE_KEY!,
 
   // JWT_PUBLIC_KEY:
   //   process.env.NODE_ENV === 'development'
