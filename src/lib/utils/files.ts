@@ -18,6 +18,7 @@ export const writeFile = (
   data: string | NodeJS.ArrayBufferView,
   options?: fs.WriteFileOptions
 ) => {
+  console.log(`writing to ${path.join(process.cwd(), filePath)}`);
   return fs.writeFileSync(path.join(process.cwd(), filePath), data, options);
 };
 
