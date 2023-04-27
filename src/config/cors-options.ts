@@ -13,9 +13,9 @@ const allowedOrigins = [
 
 // Cross Orign Resource Sharing
 export const corsOptions = {
-  origin: (origin, callback) => {
+  origin: function (origin, callback) {
     // disallow origin for postman and other origin later
-    if (allowedOrigins.includes(origin!) || !origin) {
+    if (allowedOrigins.includes(origin as string) || !origin) {
       callback(null, true);
     } else {
       callback(new Error('Not allowed by CORS'));
