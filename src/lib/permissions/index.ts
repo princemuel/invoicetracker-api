@@ -5,11 +5,11 @@ export const permissions = shield({
   Query: {
     '*': rules.isAuthenticated,
     refreshAuth: allow,
+    logout: allow,
   },
   Mutation: {
     '*': rules.isAuthenticated,
     login: allow,
-    logout: allow,
     register: allow,
   },
 });
