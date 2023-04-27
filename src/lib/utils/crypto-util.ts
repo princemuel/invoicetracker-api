@@ -1,5 +1,4 @@
 import * as crypto from 'crypto';
-import { writeFile } from './files';
 
 export function gravatar(email = '', size = 200, defaults = 'retro') {
   const BASE_URL = `https://gravatar.com/avatar`;
@@ -21,30 +20,4 @@ function createHash(
   options?: crypto.HashOptions
 ) {
   return crypto.createHash(algorithm, options).update(data).digest(encoding);
-}
-
-export function genKeyPair() {
-  crypto.generateKeyPair(
-    'rsa',
-    {
-      modulusLength: 4096,
-      publicKeyEncoding: {
-        type: 'pkcs1',
-        format: 'pem',
-      },
-      privateKeyEncoding: {
-        type: 'pkcs1',
-        format: 'pem',
-        // cipher: 'aes-256-cbc',
-        // passphrase: '@Blah,b1@H.B1@w#$',
-      },
-    },
-    (error, publicKey, privateKey) => {
-      if (error) {
-        console.error(error);
-      }
-      writeFile('public.pem', publicKey);
-      writeFile('private.pem', privateKey);
-    }
-  );
 }

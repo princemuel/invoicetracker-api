@@ -15,16 +15,12 @@ import morgan from 'morgan';
 import { prisma } from './client';
 import { constants, corsOptions } from './config';
 import { Context, createContext, schema } from './lib';
-import { AppError, genKeyPair, getErrorMessage } from './lib/utils';
+import { AppError, getErrorMessage } from './lib/utils';
 
 const PORT = constants.PORT;
 const PATH = 'api/graphql';
 const app = express();
 const httpServer = http.createServer(app);
-
-if (process.env.NODE_ENV !== 'production') {
-  genKeyPair();
-}
 
 /** Starts the application */
 async function bootstrap() {
