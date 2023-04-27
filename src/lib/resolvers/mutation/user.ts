@@ -8,10 +8,8 @@ import {
   createTokens,
   createVerificationCode,
   encodeAuthUser,
-  getErrorMessage,
   gravatar,
   hash,
-  removeCookies,
 } from '../../utils';
 
 export const register = mutationField('register', {
@@ -134,36 +132,6 @@ export const login = mutationField('login', {
       //! Make sure to test this scenario
       console.log(error);
       return null;
-    }
-  },
-});
-
-export const logout = mutationField('logout', {
-  type: nonNull('LogoutPayload'),
-  resolve: async (_root, _args, ctx) => {
-    try {
-      const cookies = ctx.req.cookies;
-      if (!(cookies?.jwt || cookies?.token)) {
-        throw new GraphQLError(
-          'Invalid cookie: Could not find the access token',
-          {
-            extensions: {
-              code: 'NO_CONTENT',
-              http: { status: 204 },
-            },
-          }
-        );
-      }
-
-      removeCookies(ctx);
-      return {
-        message: 'Logout successful',
-      };
-    } catch (error) {
-      removeCookies(ctx);
-      return {
-        message: getErrorMessage(error),
-      };
     }
   },
 });

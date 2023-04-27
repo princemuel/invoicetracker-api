@@ -1,6 +1,12 @@
 import { GraphQLError } from 'graphql';
-import { nullable, queryField } from 'nexus';
-import { createTokens, encodeAuthUser, verifyJwt } from '../../utils';
+import { nonNull, nullable, queryField } from 'nexus';
+import {
+  createTokens,
+  encodeAuthUser,
+  getErrorMessage,
+  removeCookies,
+  verifyJwt,
+} from '../../utils';
 
 export const user = queryField('user', {
   type: nullable('User'),
@@ -58,5 +64,35 @@ export const refreshAuth = queryField('refreshAuth', {
     return {
       token: accessToken,
     };
+  },
+});
+
+export const logout = queryField('logout', {
+  type: nonNull('LogoutPayload'),
+  resolve: async (_root, _args, ctx) => {
+    try {
+      const cookies = ctx.req.cookies;
+      if (!(cookies?.jwt || cookies?.token)) {
+        throw new GraphQLError(
+          'Invalid cookie: Could not find the access token',
+          {
+            extensions: {
+              code: 'NO_CONTENT',
+              http: { status: 204 },
+            },
+          }
+        );
+      }
+
+      removeCookies(ctx);
+      return {
+        message: 'Logout successful',
+      };
+    } catch (error) {
+      removeCookies(ctx);
+      return {
+        message: getErrorMessage(error),
+      };
+    }
   },
 });
