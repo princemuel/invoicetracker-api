@@ -1,12 +1,15 @@
-name: PUSH GRAPHQL SCHEMA TO FRONTEND REPO
+name: MIGRATE CHANGES IN GRAPHQL SCHEMA TO FRONTEND REPOSITORY
 
 on:
   push:
     branches: [dev]
+  pull_request:
+    branches: [main]
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    container: ubuntu
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -22,4 +25,5 @@ jobs:
           user-email: vansomecsam@gmail.com
           user-name: princemuel
           target-branch: dev
-          commit-message: 'docs: update types and schema for graphql'
+          # commit-message: 'ci: update schema and types for graphql'
+          commit-message: See ORIGIN_COMMIT from $GITHUB_REF
