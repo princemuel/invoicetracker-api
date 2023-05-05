@@ -1,9 +1,9 @@
 import { User } from '@prisma/client';
 import type { CookieOptions } from 'express';
-import { constants } from '../../config/environment';
+import { constants } from '../../config';
+import type { JwtPayload } from '../../types';
 import type { Context } from '../context';
 import { signJwt } from './jwt';
-import { JwtPayload } from './types';
 
 const createCookieOptions = (): CookieOptions => {
   const isProd = process.env.NODE_ENV === 'production';

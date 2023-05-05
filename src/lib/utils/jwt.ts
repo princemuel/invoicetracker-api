@@ -1,7 +1,7 @@
 import * as bcrypt from 'bcrypt';
 import jwt, { SignOptions } from 'jsonwebtoken';
-import { constants } from '../../config/environment';
-import type { JwtPayload } from './types';
+import { constants } from '../../config';
+import type { JwtPayload } from '../../types';
 
 type Key = 'AccessToken' | 'RefreshToken';
 
