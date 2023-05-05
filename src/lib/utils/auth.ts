@@ -29,38 +29,20 @@ const createRefreshToken = (payload: JwtPayload) => {
   });
 };
 
-const createCookies = (accessToken: string, refreshToken: string) => {
-  const accessExpiration = Number(constants.JWT_ACCESS_EXPIRATION) * 60 * 1000;
+export const createTokens = (payload: JwtPayload, context: Context) => {
+  const accessToken = createAccessToken(payload);
+  const refreshToken = createRefreshToken(payload);
+
   const refreshExpiration =
     Number(constants.JWT_REFRESH_EXPIRATION) * 24 * 60 * 60 * 1000;
-
-  const accessOptions: CookieOptions = {
-    ...cookieOptions,
-    expires: new Date(Date.now() + accessExpiration),
-  };
 
   const refreshOptions: CookieOptions = {
     ...cookieOptions,
     expires: new Date(Date.now() + refreshExpiration),
   };
 
-  return [
-    ['token', accessToken, accessOptions],
-    ['jwt', refreshToken, refreshOptions],
-  ] as const;
-};
-
-export const createTokens = (payload: JwtPayload, context: Context) => {
-  const accessToken = createAccessToken(payload);
-  const refreshToken = createRefreshToken(payload);
-
   if (context) {
-    const [accessCookie, refreshCookie] = createCookies(
-      accessToken,
-      refreshToken
-    );
-    context.res.cookie(...accessCookie);
-    context.res.cookie(...refreshCookie);
+    context.res.cookie('jwt', refreshToken, refreshOptions);
   }
 
   return {
