@@ -1,7 +1,7 @@
 import type { ExpressContextFunctionArgument } from '@apollo/server/express4';
 import { PrismaClient, User } from '@prisma/client';
 import { prisma } from '../client';
-import type { ExpressRequest, ExpressResponse } from './utils';
+import type { ExpressRequest, ExpressResponse } from '../types';
 import { getAuthUser } from './utils';
 
 export interface Context {
