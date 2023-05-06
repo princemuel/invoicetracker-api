@@ -1,12 +1,13 @@
 import { GraphQLError } from 'graphql';
 import { list, nonNull, nullable, queryField } from 'nexus';
+import { MESSAGES } from '../../../config';
 
 export const invoices = queryField('invoices', {
   type: nonNull(list('Invoice')),
   resolve: async (root, args, ctx) => {
     const user = await ctx.getAuthUser(ctx.req);
     if (!user) {
-      throw new GraphQLError('Invalid User: User not authorised', {
+      throw new GraphQLError(MESSAGES.SESSION_UNAUTHORIZED, {
         extensions: {
           code: 'FORBIDDEN',
           http: { status: 403 },
@@ -32,7 +33,7 @@ export const invoice = queryField('invoice', {
   resolve: async (root, args, ctx) => {
     const user = await ctx.getAuthUser(ctx.req);
     if (!user) {
-      throw new GraphQLError('Invalid User: User not authorised', {
+      throw new GraphQLError(MESSAGES.SESSION_UNAUTHORIZED, {
         extensions: {
           code: 'FORBIDDEN',
           http: { status: 403 },

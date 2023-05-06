@@ -45,10 +45,7 @@ export const createTokens = (payload: JwtPayload, context: Context) => {
     context.res.cookie('jwt', refreshToken, refreshOptions);
   }
 
-  return {
-    accessToken,
-    refreshToken,
-  };
+  return { accessToken };
 };
 
 export function encodeAuthUser(user: User) {
