@@ -5,7 +5,7 @@ import { ExpressRequest } from '../../types';
 import { verifyJwt } from './jwt';
 
 export const getAuthUser = async (req: ExpressRequest) => {
-  const token = req.get('Authorization')?.split(' ')[1] || req.cookies?.jwt;
+  const token = req.get('Authorization')?.split?.(' ')?.[1] || req.cookies?.jwt;
 
   if (!token) {
     throw new GraphQLError(MESSAGES.SESSION_UNAUTHENTICATED, {

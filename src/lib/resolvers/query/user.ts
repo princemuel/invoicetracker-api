@@ -20,7 +20,7 @@ export const refreshAuth = queryField('refreshAuth', {
   type: nullable('AuthPayload'),
   resolve: async (_root, _args, ctx) => {
     const token =
-      ctx.req.get('Authorization')?.split(' ')[1] || ctx.req.cookies?.jwt;
+      ctx.req.get('Authorization')?.split?.(' ')?.[1] || ctx.req.cookies?.jwt;
 
     if (!token) {
       throw new GraphQLError(MESSAGES.SESSION_EXPIRED, {
