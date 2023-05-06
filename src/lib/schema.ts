@@ -8,9 +8,9 @@ import * as typeDefs from './resolvers';
 const baseSchema = makeSchema({
   types: typeDefs,
   plugins: [
+    guardPlugin,
     declarativeWrappingPlugin({ disable: true }),
     connectionPlugin(),
-    guardPlugin,
   ],
   outputs: {
     typegen: path.join(

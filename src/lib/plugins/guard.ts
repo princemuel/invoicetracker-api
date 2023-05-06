@@ -19,6 +19,6 @@ export const guardPlugin = nullabilityGuardPlugin({
     ID: ({ info }) => `${info.parentType.name}:N/A`,
     Boolean: () => false,
     Float: () => 0,
-    DateTime: () => `${new Date(Date.now()).toISOString()}`,
+    DateTime: () => new Date(Date.now()).toISOString(),
   },
 });
