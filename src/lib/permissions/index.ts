@@ -33,7 +33,7 @@ export const permissions = shield(
         });
       }
 
-      console.error(error);
+      // console.error('INTERNAL_SERVER_ERROR', error);
       return new GraphQLError('Internal Server Error', {
         extensions: {
           code: ApolloServerErrorCode.INTERNAL_SERVER_ERROR,
