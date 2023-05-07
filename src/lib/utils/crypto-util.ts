@@ -21,3 +21,26 @@ function createHash(
 ) {
   return crypto.createHash(algorithm, options).update(data).digest(encoding);
 }
+
+export function generateCryptoKeyPair(callback: () => void) {
+  crypto.generateKeyPair(
+    'rsa',
+    {
+      modulusLength: 4096,
+      publicKeyEncoding: {
+        type: 'pkcs1',
+        format: 'pem',
+      },
+      privateKeyEncoding: {
+        type: 'pkcs1',
+        format: 'pem',
+        // cipher: 'aes-256-cbc',
+        // passphrase: '@Blah,b1@H.B1@w#$',
+      },
+    },
+    (error, publicKey, privateKey) => {
+      if (error) console.log(error);
+      callback();
+    }
+  );
+}
