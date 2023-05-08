@@ -12,8 +12,8 @@ This is the backend of my [Invoice Mail Web App](https://github.com/princemuel/i
     - [`yarn start`](#yarn-start)
     - [`yarn studio`](#yarn-studio)
     - [`yarn postinstall`](#yarn-postinstall)
-    - [Deployment](#deployment)
-    - [Links](#links)
+  - [Deployment](#deployment)
+  - [Links](#links)
   - [My process](#my-process)
     - [Built with](#built-with)
     - [What I learned](#what-i-learned)
@@ -57,12 +57,12 @@ It gives the developer a seamless and interactive experience with Prisma and the
 Runs automatically after the project's dependencies have been installed.<br />
 It runs the generate script to output correct types, migrations, schema for Prisma and Nexus GraphQl
 
-### Deployment
+## Deployment
 
 Your app is ready to be deployed!
 See the section about [deployment](./docs/deployment.md) for more information.
 
-### Links
+## Links
 
 - Code: [Github Repo](https://github.com/princemuel/invoice-api)
 - Api Endpoint: [Invoice Mailer](https://invoicemailer.onrender.com)
