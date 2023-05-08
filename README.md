@@ -1,13 +1,18 @@
-# Invoice Mail Backend Project
+# Invoice Mail
 
-This project integrates with Prisma, [REST Countries API](https://restcountries.com) to display useful imformation about countries in out world
+This is the backend of my [Invoice Mail Web App](https://github.com/princemuel/invoice-web-app)
 
 ## Table of contents
 
-- [Invoice Mail Backend Project](#invoice-mail-backend-project)
+- [Invoice Mail](#invoice-mail)
   - [Table of contents](#table-of-contents)
   - [Overview](#overview)
-    - [The goal](#the-goal)
+  - [Available Scripts](#available-scripts)
+    - [`yarn dev`](#yarn-dev)
+    - [`yarn start`](#yarn-start)
+    - [`yarn studio`](#yarn-studio)
+    - [`yarn postinstall`](#yarn-postinstall)
+    - [Deployment](#deployment)
     - [Links](#links)
   - [My process](#my-process)
     - [Built with](#built-with)
@@ -18,22 +23,56 @@ This project integrates with Prisma, [REST Countries API](https://restcountries.
 
 ## Overview
 
-### The goal
+This project was bootstrapped with [Express](https://expressjs.com/en/starter/installing.html) and [Apollo Server 4](https://www.apollographql.com/docs/apollo-server)
 
-Users should be able to:
+## Available Scripts
 
-<!-- - [x] See all countries from the API on the homepage -->
+In the project directory, you can run:
+
+### `yarn dev`
+
+Runs the app in the development mode with server restarts.<br />
+Open [http://localhost:4000](http://localhost:4000) to view it in the browser. You will be directed to the **Apollo Studio Playground**.
+
+The page will refresh when you make edits to the code.<br />
+You will also see updates to the GraphQL schema.
+
+### `yarn start`
+
+Runs the app in the development or production mode without server restarts.<br />
+Open [http://localhost:4000](http://localhost:4000) to view it in the browser.
+
+<!-- ### `yarn test`
+
+Launches the test runner in the interactive watch mode.<br />
+See the section about [running tests](https://) for more information. -->
+
+### `yarn studio`
+
+Opens up Prisma Studio in the browser with a nice GUI interface. <br>
+It gives the developer a seamless and interactive experience with Prisma and the Database service used
+
+### `yarn postinstall`
+
+Runs automatically after the project's dependencies have been installed.<br />
+It runs the generate script to output correct types, migrations, schema for Prisma and Nexus GraphQl
+
+### Deployment
+
+Your app is ready to be deployed!
+See the section about [deployment](./docs/deployment.md) for more information.
 
 ### Links
 
 - Code: [Github Repo](https://github.com/princemuel/invoice-api)
-- Api Endpoint: [Invoice Mailer](https://invoicemailer.onrender.com/api/graphql)
+- Api Endpoint: [Invoice Mailer](https://invoicemailer.onrender.com)
 
 ## My process
 
 ### Built with
 
 - RSA asymmetric encryption
+- [TS Node](https://typestrong.org/ts-node/docs/)
 - [Express](https://expressjs.com/en/starter/installing.html) - A Fast, unopinionated, minimalist web framework for Node.js
 - [Graphql](https://graphql.org/learn/) - A server-side runtime for executing queries using a type system you define for your data
 - [Apollo Server 4](https://www.apollographql.com/docs/apollo-server) - An open-source, spec-compliant GraphQL server that's compatible with any GraphQL client, including Apollo Client
