@@ -23,5 +23,4 @@ export const corsOptions = {
     }
   },
   credentials: true,
-  optionsSuccessStatus: 200,
 } as cors.CorsOptions;
