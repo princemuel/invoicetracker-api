@@ -67,8 +67,9 @@ async function bootstrap() {
 
   await server.start();
 
+  app.options('*', cors()); // include before other routes
   app.use(
-    `/`,
+    `/${PATH}`,
 
     // Handle options credentials check - before CORS!
     // and fetch cookies credentials requirement
@@ -119,7 +120,7 @@ async function bootstrap() {
     httpServer.listen({ port: PORT }, resolve)
   );
   if (process.env.NODE_ENV === 'development') {
-    console.log(`🔥 Server ready at http://localhost:${PORT} 🚀`);
+    console.log(`🔥 Server ready at http://localhost:${PORT}/${PATH} 🚀`);
   }
 }
 

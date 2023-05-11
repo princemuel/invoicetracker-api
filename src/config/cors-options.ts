@@ -4,7 +4,7 @@ import cors from 'cors';
 // const prod = [/^https:\/\/.*\.yourdomain\.com$/];
 // const prod = constants.SERVER_URL;
 
-const allowedOrigins = [
+const whitelist = [
   'https://invoicemail.vercel.app',
   'https://studio.apollographql.com',
   'http://localhost:4000',
@@ -13,14 +13,13 @@ const allowedOrigins = [
 
 // Cross Orign Resource Sharing
 export const corsOptions = {
-  origin: function (origin, callback) {
-    // disallow origin for postman and other origin later
-    if (allowedOrigins.includes(origin as string) || !origin) {
+  origin: (origin, callback) => {
+    //@ts-expect-error
+    if (whitelist.indexOf(origin) !== -1 || !origin) {
       callback(null, true);
     } else {
       callback(new Error('Not allowed by CORS'));
     }
   },
   credentials: true,
-  optionsSuccessStatus: 200,
 } as cors.CorsOptions;
