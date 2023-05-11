@@ -6,6 +6,7 @@ import cors from 'cors';
 
 const whitelist = [
   'https://invoicemail.vercel.app',
+  'https://invoicemailer.onrender.com',
   'https://studio.apollographql.com',
   'http://localhost:4000',
   'http://localhost:3000',
@@ -22,4 +23,5 @@ export const corsOptions = {
     }
   },
   credentials: true,
+  optionsSuccessStatus: 200,
 } as cors.CorsOptions;
