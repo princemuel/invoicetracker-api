@@ -8,17 +8,25 @@ export interface Context {
   req: ExpressRequest;
   res: ExpressResponse;
   db: PrismaClient;
-  getAuthUser: (req: ExpressRequest) => Promise<User | null>;
+  // getAuthUser: (req: ExpressRequest) => Promise<User | null>;
+  user: User | null;
 }
 
 export async function createContext(
   express: ExpressContextFunctionArgument
 ): Promise<Context> {
-  return {
+  const context: Context = {
     ...express,
     req: express?.req,
     res: express?.res,
     db: prisma,
-    getAuthUser,
+    user: null,
   };
+
+  try {
+    const user = await getAuthUser(context.req);
+    context.user = user;
+  } catch (e) {}
+
+  return context;
 }
