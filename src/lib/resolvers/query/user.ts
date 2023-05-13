@@ -4,7 +4,6 @@ import { MESSAGES } from '../../../config';
 import {
   createTokens,
   encodeAuthUser,
-  getErrorMessage,
   removeCookies,
   verifyJwt,
 } from '../../utils';
@@ -85,7 +84,7 @@ export const logout = queryField('logout', {
     } catch (error) {
       removeCookies(ctx);
       return {
-        message: getErrorMessage(error),
+        message: 'Logout successful',
       };
     }
   },
