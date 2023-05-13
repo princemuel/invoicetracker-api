@@ -16,7 +16,7 @@ const whitelist = [
 export const corsOptions = {
   origin: (origin, callback) => {
     //@ts-expect-error
-    if (whitelist.indexOf(origin) !== -1 || !origin) {
+    if (whitelist.includes(origin) || !origin) {
       callback(null, true);
     } else {
       callback(new Error('Not allowed by CORS'));
