@@ -21,7 +21,7 @@ export const register = mutationField('register', {
     const { email, password } = args.input;
 
     if (!email || !password) {
-      throw new GraphQLError(MESSAGES.INPUT_REQUIRED_USER, {
+      throw new GraphQLError(MESSAGES.AUTH_REQUIRED_USER, {
         extensions: {
           code: ApolloServerErrorCode.BAD_USER_INPUT,
           http: { status: 400 },
@@ -36,7 +36,7 @@ export const register = mutationField('register', {
     });
 
     if (duplicate)
-      throw new GraphQLError(MESSAGES.INPUT_INVALID_DUPLICATE_EMAIL, {
+      throw new GraphQLError(MESSAGES.AUTH_DUPLICATE_EMAIL, {
         extensions: {
           code: ApolloServerErrorCode.BAD_USER_INPUT,
           http: { status: 409 },
@@ -73,7 +73,7 @@ export const login = mutationField('login', {
 
     const { email, password } = args.input;
     if (!email || !password)
-      throw new GraphQLError(MESSAGES.INPUT_REQUIRED_USER, {
+      throw new GraphQLError(MESSAGES.AUTH_REQUIRED_USER, {
         extensions: {
           code: ApolloServerErrorCode.BAD_USER_INPUT,
           http: { status: 400 },
@@ -88,7 +88,7 @@ export const login = mutationField('login', {
 
     //  if (!user || !user.verified) {
     if (!user)
-      throw new GraphQLError(MESSAGES.INPUT_INVALID_EMAIL, {
+      throw new GraphQLError(MESSAGES.AUTH_INVALID_CREDENTIALS, {
         extensions: {
           code: 'UNAUTHENTICATED',
           http: { status: 401 },
@@ -97,7 +97,7 @@ export const login = mutationField('login', {
 
     const match = await compare(args.input.password, user.password);
     if (!match)
-      throw new GraphQLError(MESSAGES.INPUT_INVALID_PASSWORD, {
+      throw new GraphQLError(MESSAGES.AUTH_INVALID_CREDENTIALS, {
         extensions: {
           code: 'UNAUTHENTICATED',
           http: { status: 401 },

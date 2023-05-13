@@ -15,7 +15,7 @@ export const user = queryField('user', {
   },
 });
 
-export const refreshAuth = queryField('refreshAuth', {
+export const refresh = queryField('refresh', {
   type: nullable('AuthPayload'),
   resolve: async (_root, _args, ctx) => {
     const token =
@@ -48,7 +48,7 @@ export const refreshAuth = queryField('refreshAuth', {
 
     //  if (!user || !user.verified) {
     if (!user)
-      throw new GraphQLError(MESSAGES.INPUT_INVALID_EMAIL, {
+      throw new GraphQLError(MESSAGES.AUTH_INVALID_CREDENTIALS, {
         extensions: {
           code: 'FORBIDDEN',
           http: { status: 403 },
