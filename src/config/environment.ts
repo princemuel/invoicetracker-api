@@ -1,4 +1,4 @@
-import { parseBuffer } from '../lib/utils/files';
+import { parseBuffer } from '../utils';
 
 export const constants = {
   IS_DEV: process.env.NODE_ENV === 'development',
