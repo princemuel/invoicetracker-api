@@ -15,7 +15,12 @@ import morgan from 'morgan';
 import { prisma } from './client';
 import { constants, corsOptions } from './config';
 import { Context, createContext, schema } from './lib';
-import { AppError, getErrorMessage } from './lib/utils';
+import {
+  AppError,
+  credentials,
+  errorHandler,
+  getErrorMessage,
+} from './middleware';
 
 const PORT = constants.PORT;
 const PATH = 'api/graphql';
@@ -67,13 +72,13 @@ async function bootstrap() {
 
   await server.start();
 
-  app.options('*', cors(corsOptions)); // include before other routes
+  // app.options('*', cors(corsOptions)); // include before other routes
   app.use(
     `/${PATH}`,
 
     // Handle options credentials check - before CORS!
     // and fetch cookies credentials requirement
-    // credentials,
+    credentials,
 
     // Cross Origin Resource Sharing
     cors<cors.CorsRequest>(corsOptions),
@@ -89,7 +94,9 @@ async function bootstrap() {
 
     expressMiddleware(server, {
       context: createContext,
-    })
+    }),
+
+    errorHandler
   );
 
   // UNHANDLED ROUTES
