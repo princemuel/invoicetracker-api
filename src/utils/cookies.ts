@@ -1,8 +1,8 @@
 import { User } from '@prisma/client';
-import type { CookieOptions } from 'express';
-import { constants } from '../../config';
-import type { JwtPayload } from '../../types';
-import type { Context } from '../context';
+import { CookieOptions } from 'express';
+import { constants } from '../config';
+import { Context } from '../lib';
+import type { JwtPayload } from '../types';
 import { signJwt } from './jwt';
 
 const createCookieOptions = (): CookieOptions => {
@@ -41,9 +41,7 @@ export const createTokens = (payload: JwtPayload, context: Context) => {
     expires: new Date(Date.now() + refreshExpiration),
   };
 
-  if (context) {
-    context.res.cookie('jwt', refreshToken, refreshOptions);
-  }
+  context.res.cookie('jwt', refreshToken, refreshOptions);
 
   return { accessToken };
 };

@@ -1,8 +1,8 @@
 import { GraphQLError } from 'graphql';
-import { prisma } from '../../client';
-import { MESSAGES } from '../../config';
-import { ExpressRequest } from '../../types';
-import { verifyJwt } from './jwt';
+import { prisma } from '../client';
+import { MESSAGES } from '../config';
+import { ExpressRequest } from '../types';
+import { verifyJwt } from '../utils';
 
 export const getAuthUser = async (req: ExpressRequest) => {
   const token = req.get('Authorization')?.split?.(' ')?.[1] || req.cookies?.jwt;

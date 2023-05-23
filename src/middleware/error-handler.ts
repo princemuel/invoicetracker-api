@@ -1,3 +1,17 @@
+import { NextFunction, Request, Response } from 'express';
+import { logEvent } from '../utils';
+
+export const errorHandler = (
+  err: Error,
+  _req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  logEvent(`${err.name}: ${err.message}`, 'errors.log');
+  console.error(err.stack);
+  res.status(500).send(err.message);
+};
+
 export class AppError extends Error {
   status: string;
   isOperational: boolean;
