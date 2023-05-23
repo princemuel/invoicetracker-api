@@ -11,10 +11,7 @@
     "module": "CommonJS",
     "moduleResolution": "node",
     "resolveJsonModule": true,
-    "incremental": true,
-    "baseUrl": ".",
-    "rootDir": ".",
-    "outDir": "dist"
+    "incremental": true
   },
   "include": ["**/*.ts"],
   "exclude": ["node_modules", "dist"]
