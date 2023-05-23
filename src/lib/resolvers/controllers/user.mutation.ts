@@ -10,7 +10,7 @@ import {
   encodeAuthUser,
   gravatar,
   hash,
-} from '../../utils';
+} from '../../../utils';
 
 export const register = mutationField('register', {
   type: nullable('MessagePayload'),

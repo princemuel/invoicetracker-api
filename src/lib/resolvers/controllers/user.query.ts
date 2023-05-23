@@ -6,7 +6,7 @@ import {
   encodeAuthUser,
   removeCookies,
   verifyJwt,
-} from '../../utils';
+} from '../../../utils';
 
 export const user = queryField('user', {
   type: nullable('User'),

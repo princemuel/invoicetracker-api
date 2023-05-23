@@ -3,10 +3,10 @@ import { connectionPlugin, declarativeWrappingPlugin, makeSchema } from 'nexus';
 import * as path from 'path';
 import { permissions } from './permissions';
 import { guardPlugin } from './plugins';
-import * as typeDefs from './resolvers';
+import * as types from './resolvers';
 
 const baseSchema = makeSchema({
-  types: typeDefs,
+  types,
   plugins: [
     guardPlugin,
     declarativeWrappingPlugin({ disable: true }),
