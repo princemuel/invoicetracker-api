@@ -94,15 +94,15 @@ async function bootstrap() {
 
     expressMiddleware(server, {
       context: createContext,
-    }),
-
-    errorHandler
+    })
   );
 
   // UNHANDLED ROUTES
   app.all('*', (req: Request, res: Response, next: NextFunction) => {
     next(new AppError(404, `Route ${req.originalUrl} was not found`));
   });
+
+  app.use(errorHandler);
 
   // GLOBAL ERROR HANDLER
   app.use(
@@ -148,9 +148,11 @@ process.on('unhandledRejection', (error) => {
 
 // Start server
 bootstrap()
-  .catch((error) => {
-    throw error;
-  })
-  .finally(async () => {
+  .then(async () => {
     await prisma.$disconnect();
+  })
+  .catch(async (e) => {
+    console.error(e);
+    await prisma.$disconnect();
+    process.exit(1);
   });
