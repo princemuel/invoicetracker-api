@@ -7,7 +7,7 @@ export const permissions = shield(
   {
     Query: {
       '*': rules.isAuthenticated,
-      refreshAuth: allow,
+      refresh: allow,
       logout: allow,
     },
     Mutation: {

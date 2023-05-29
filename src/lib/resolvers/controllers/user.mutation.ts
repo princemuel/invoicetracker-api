@@ -19,7 +19,6 @@ export const register = mutationField('register', {
   },
   resolve: async (_root, args, ctx) => {
     const { email, password } = args.input;
-
     if (!email || !password) {
       throw new GraphQLError(MESSAGES.INPUT_REQUIRED_USER, {
         extensions: {
@@ -34,7 +33,6 @@ export const register = mutationField('register', {
         email: email.toLowerCase(),
       },
     });
-
     if (duplicate)
       throw new GraphQLError(MESSAGES.INPUT_INVALID_DUPLICATE_EMAIL, {
         extensions: {
@@ -44,7 +42,6 @@ export const register = mutationField('register', {
       });
 
     const hashed = await hash(password);
-
     const draft = produce(args.input, (draft) => {
       draft.email = email.toLowerCase();
       draft.password = hashed;
@@ -55,7 +52,6 @@ export const register = mutationField('register', {
     const user = await ctx.db.user.create({
       data: draft,
     });
-
     return {
       message: `New user ${user?.id} created`,
     };
@@ -68,9 +64,6 @@ export const login = mutationField('login', {
     input: nonNull('LoginInput'),
   },
   resolve: async (_root, args, ctx) => {
-    // const cookies = ctx.req.cookies;
-    // console.log(`cookies available at login: ${JSON.stringify(cookies)}`);
-
     const { email, password } = args.input;
     if (!email || !password)
       throw new GraphQLError(MESSAGES.INPUT_REQUIRED_USER, {
@@ -85,7 +78,6 @@ export const login = mutationField('login', {
         email: email.toLowerCase(),
       },
     });
-
     //  if (!user || !user.verified) {
     if (!user)
       throw new GraphQLError(MESSAGES.INPUT_INVALID_EMAIL, {
@@ -95,7 +87,7 @@ export const login = mutationField('login', {
         },
       });
 
-    const match = await compare(args.input.password, user.password);
+    const match = await compare(password, user.password);
     if (!match)
       throw new GraphQLError(MESSAGES.INPUT_INVALID_PASSWORD, {
         extensions: {
@@ -105,10 +97,8 @@ export const login = mutationField('login', {
       });
 
     const data = encodeAuthUser(user);
-    const { accessToken } = createTokens(data, ctx);
+    const token = createTokens(data, ctx);
 
-    return {
-      token: accessToken,
-    };
+    return { token };
   },
 });
