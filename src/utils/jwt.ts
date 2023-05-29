@@ -6,8 +6,8 @@ import type { JwtPayload } from '../types';
 type Key = 'AccessToken' | 'RefreshToken';
 
 const jwtOptions: SignOptions = {
-  issuer: constants.SERVER_URL,
-  audience: constants.SERVER_URL,
+  issuer: process.env.SERVER_URL,
+  audience: process.env.SERVER_URL,
 };
 
 /**
