@@ -1,10 +1,10 @@
-import cors from 'cors';
+import * as cors from 'cors';
 
 // const local = [/^http:\/\/localhost:\d{4}$/];
 // const prod = [/^https:\/\/.*\.yourdomain\.com$/];
 // const prod = constants.SERVER_URL;
 
-const whitelist = [
+export const whitelist = [
   'https://invoicemail.vercel.app',
   'https://invoicemailer.onrender.com',
   'https://studio.apollographql.com',

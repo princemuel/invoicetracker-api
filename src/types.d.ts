@@ -3,15 +3,15 @@ import * as jwt from 'jsonwebtoken';
 
 export interface ExpressRequest extends Request {
   cookies: {
+    'x-access-token': string;
     jwt: string;
-    token: string;
   };
 }
 
 export interface ExpressResponse extends Response {
   cookies?: {
+    'x-access-token': string;
     jwt: string;
-    token: string;
   };
 }
 export interface JwtPayload extends jwt.JwtPayload {

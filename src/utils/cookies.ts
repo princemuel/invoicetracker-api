@@ -1,8 +1,9 @@
 import { User } from '@prisma/client';
-import type { CookieOptions } from 'express';
-import { constants } from '../../config';
-import type { JwtPayload } from '../../types';
-import type { Context } from '../context';
+import { CookieOptions } from 'express';
+import produce from 'immer';
+import { constants } from '../config';
+import { Context } from '../lib';
+import type { JwtPayload } from '../types';
 import { signJwt } from './jwt';
 
 const createCookieOptions = (): CookieOptions => {
@@ -29,23 +30,36 @@ const createRefreshToken = (payload: JwtPayload) => {
   });
 };
 
+const createCookies = (tokenA: string, tokenR: string) => {
+  const tokenAOptions = produce(cookieOptions, (draft) => {
+    draft.maxAge = Number(constants.JWT_ACCESS_EXPIRATION) * 60 * 1000;
+  });
+  const tokenROptions = produce(cookieOptions, (draft) => {
+    draft.maxAge =
+      Number(constants.JWT_REFRESH_EXPIRATION) * 24 * 60 * 60 * 1000;
+  });
+
+  return [
+    ['x-access-token', tokenA, tokenAOptions],
+    ['jwt', tokenR, tokenROptions],
+  ] as const;
+};
+
 export const createTokens = (payload: JwtPayload, context: Context) => {
   const accessToken = createAccessToken(payload);
   const refreshToken = createRefreshToken(payload);
 
-  const refreshExpiration =
-    Number(constants.JWT_REFRESH_EXPIRATION) * 24 * 60 * 60 * 1000;
+  if (Boolean(context)) {
+    const [accessCookie, refreshCookie] = createCookies(
+      accessToken,
+      refreshToken
+    );
 
-  const refreshOptions: CookieOptions = {
-    ...cookieOptions,
-    expires: new Date(Date.now() + refreshExpiration),
-  };
-
-  if (context) {
-    context.res.cookie('jwt', refreshToken, refreshOptions);
+    context.res.cookie(...accessCookie);
+    context.res.cookie(...refreshCookie);
   }
 
-  return { accessToken };
+  return accessToken;
 };
 
 export function encodeAuthUser(user: User) {
@@ -53,5 +67,6 @@ export function encodeAuthUser(user: User) {
 }
 
 export const removeCookies = ({ res }: Context) => {
+  res.clearCookie('x-access-token', { ...cookieOptions });
   res.clearCookie('jwt', { ...cookieOptions });
 };

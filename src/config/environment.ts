@@ -1,4 +1,7 @@
-import { parseBuffer } from '../lib/utils/files';
+import * as dotenv from 'dotenv';
+import { parseBuffer } from '../utils';
+
+dotenv.config();
 
 export const constants = {
   IS_DEV: process.env.NODE_ENV === 'development',

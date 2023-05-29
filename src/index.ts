@@ -15,7 +15,12 @@ import morgan from 'morgan';
 import { prisma } from './client';
 import { constants, corsOptions } from './config';
 import { Context, createContext, schema } from './lib';
-import { AppError, getErrorMessage } from './lib/utils';
+import {
+  AppError,
+  credentials,
+  errorHandler,
+  getErrorMessage,
+} from './middleware';
 
 const PORT = constants.PORT;
 const PATH = 'api/graphql';
@@ -67,13 +72,13 @@ async function bootstrap() {
 
   await server.start();
 
-  app.options('*', cors(corsOptions)); // include before other routes
+  // app.options('*', cors(corsOptions)); // include before other routes
   app.use(
     `/${PATH}`,
 
     // Handle options credentials check - before CORS!
     // and fetch cookies credentials requirement
-    // credentials,
+    credentials,
 
     // Cross Origin Resource Sharing
     cors<cors.CorsRequest>(corsOptions),
@@ -96,6 +101,8 @@ async function bootstrap() {
   app.all('*', (req: Request, res: Response, next: NextFunction) => {
     next(new AppError(404, `Route ${req.originalUrl} was not found`));
   });
+
+  app.use(errorHandler);
 
   // GLOBAL ERROR HANDLER
   app.use(
@@ -141,9 +148,11 @@ process.on('unhandledRejection', (error) => {
 
 // Start server
 bootstrap()
-  .catch((error) => {
-    throw error;
-  })
-  .finally(async () => {
+  .then(async () => {
     await prisma.$disconnect();
+  })
+  .catch(async (e) => {
+    console.error(e);
+    await prisma.$disconnect();
+    process.exit(1);
   });

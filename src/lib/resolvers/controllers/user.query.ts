@@ -6,7 +6,7 @@ import {
   encodeAuthUser,
   removeCookies,
   verifyJwt,
-} from '../../utils';
+} from '../../../utils';
 
 export const user = queryField('user', {
   type: nullable('User'),
@@ -15,13 +15,12 @@ export const user = queryField('user', {
   },
 });
 
-export const refreshAuth = queryField('refreshAuth', {
+export const refresh = queryField('refresh', {
   type: nullable('AuthPayload'),
   resolve: async (_root, _args, ctx) => {
-    const token =
-      ctx.req.get('Authorization')?.split?.(' ')?.[1] || ctx.req.cookies?.jwt;
-
-    if (!token) {
+    const jwt = ctx.req.cookies?.['jwt'];
+    console.log('JWT', ctx.req.cookies);
+    if (!jwt) {
       throw new GraphQLError(MESSAGES.SESSION_EXPIRED, {
         extensions: {
           code: 'FORBIDDEN',
@@ -30,7 +29,7 @@ export const refreshAuth = queryField('refreshAuth', {
       });
     }
 
-    const decoded = verifyJwt(token);
+    const decoded = verifyJwt(jwt);
     if (!decoded) {
       throw new GraphQLError(MESSAGES.SESSION_INVALID_TOKEN, {
         extensions: {
@@ -45,7 +44,6 @@ export const refreshAuth = queryField('refreshAuth', {
         id: decoded.sub,
       },
     });
-
     //  if (!user || !user.verified) {
     if (!user)
       throw new GraphQLError(MESSAGES.INPUT_INVALID_EMAIL, {
@@ -56,36 +54,26 @@ export const refreshAuth = queryField('refreshAuth', {
       });
 
     const data = encodeAuthUser(user);
-    const { accessToken } = createTokens(data, ctx);
-    return {
-      token: accessToken,
-    };
+    const token = createTokens(data, ctx);
+
+    return { token };
   },
 });
 
 export const logout = queryField('logout', {
   type: nonNull('MessagePayload'),
   resolve: async (_root, _args, ctx) => {
-    try {
-      const cookies = ctx.req.cookies;
-      if (!(cookies?.jwt || cookies?.token)) {
-        throw new GraphQLError(MESSAGES.SESSION_UNAUTHORIZED, {
-          extensions: {
-            code: 'NO_CONTENT',
-            http: { status: 204 },
-          },
-        });
-      }
-
-      removeCookies(ctx);
-      return {
-        message: 'Logout successful',
-      };
-    } catch (error) {
-      removeCookies(ctx);
+    const cookies = ctx.req.cookies;
+    if (!cookies?.['x-access-token'] || !cookies?.['jwt']) {
+      removeCookies(ctx); // still make sure the cookies are removed
       return {
         message: 'Logout successful',
       };
     }
+
+    removeCookies(ctx);
+    return {
+      message: 'Logout successful',
+    };
   },
 });
