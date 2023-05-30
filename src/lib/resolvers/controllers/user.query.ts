@@ -8,13 +8,6 @@ import {
   verifyJwt,
 } from '../../../utils';
 
-export const user = queryField('user', {
-  type: nullable('User'),
-  resolve: async (root, args, ctx) => {
-    return (await ctx.getAuthUser(ctx.req)) || null;
-  },
-});
-
 export const refresh = queryField('refresh', {
   type: nullable('AuthPayload'),
   resolve: async (_root, _args, ctx) => {
