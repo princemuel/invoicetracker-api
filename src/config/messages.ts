@@ -1,8 +1,8 @@
 export const MESSAGES = {
   SESSION_UNAUTHORIZED: 'This user is not authorized',
   SESSION_UNAUTHENTICATED: 'This user is not logged in',
-  SESSION_EXPIRED: 'This token has expired',
-  SESSION_INVALID_TOKEN: 'This token is invalid',
+  SESSION_EXPIRED: 'This session has expired',
+  SESSION_INVALID_TOKEN: 'This session is invalid',
   SESSION_INVALID_USER: 'This user does not exist',
   INPUT_INVALID_INVOICE: 'This user is not authorized',
   INPUT_INVALID_DUPLICATE_EMAIL:
