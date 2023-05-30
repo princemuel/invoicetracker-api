@@ -9,7 +9,6 @@ export const getAuthUser = async (req: ExpressRequest) => {
     req.get('Authorization')?.split?.(' ')?.[1] ||
     req.cookies?.['x-access-token'];
 
-  console.log('ACCESS', token);
   if (!token) {
     throw new GraphQLError(MESSAGES.SESSION_UNAUTHENTICATED, {
       extensions: {

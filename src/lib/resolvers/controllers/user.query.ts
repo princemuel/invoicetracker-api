@@ -19,7 +19,6 @@ export const refresh = queryField('refresh', {
   type: nullable('AuthPayload'),
   resolve: async (_root, _args, ctx) => {
     const jwt = ctx.req.cookies?.['jwt'];
-    console.log('JWT', ctx.req.cookies);
     if (!jwt) {
       throw new GraphQLError(MESSAGES.SESSION_EXPIRED, {
         extensions: {
