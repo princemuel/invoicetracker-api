@@ -7,10 +7,10 @@
     "dev": "NODE_ENV=development ts-node-dev -r dotenv/config --no-notify --respawn --transpile-only ./src",
     "start": "ts-node -r dotenv/config --transpile-only ./src",
     "studio": "npx prisma studio",
-    "generate": "npm -s run generate:nexus && npm -s run generate:prisma",
-    "generate:prisma": "prisma generate",
-    "generate:nexus": "ts-node --transpile-only ./src/lib",
-    "postinstall": "npm -s run generate"
+    "gen": "npm -s run gen:nexus && npm -s run gen:prisma",
+    "gen:prisma": "prisma generate",
+    "gen:nexus": "ts-node --transpile-only ./src/lib",
+    "postinstall": "npm -s run gen"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.0",
