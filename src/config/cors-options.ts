@@ -5,7 +5,7 @@ import * as cors from 'cors';
 // const prod = constants.SERVER_URL;
 
 export const whitelist = [
-  'https://invoicemail.vercel.app',
+  'https://invoicetracker.vercel.app/',
   'https://invoicemailer.onrender.com',
   'https://studio.apollographql.com',
   'http://localhost:4000',
