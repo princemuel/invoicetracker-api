@@ -20,23 +20,31 @@ const cookieOptions = createCookieOptions();
 
 const createAccessToken = (payload: JwtPayload) => {
   return signJwt(payload, {
-    expiresIn: `${constants.JWT_ACCESS_EXPIRATION}m`,
+    // expiresIn: `${constants.JWT_ACCESS_EXPIRATION}m`,
+    expiresIn: `${constants.JWT_ACCESS_EXPIRATION}s`,
   });
 };
 
 const createRefreshToken = (payload: JwtPayload) => {
   return signJwt(payload, {
-    expiresIn: `${constants.JWT_REFRESH_EXPIRATION}d`,
+    // expiresIn: `${constants.JWT_REFRESH_EXPIRATION}d`,
+    expiresIn: `${constants.JWT_REFRESH_EXPIRATION}s`,
   });
 };
 
 const createCookies = (tokenA: string, tokenR: string) => {
+  // const tokenAOptions = produce(cookieOptions, (draft) => {
+  //   draft.maxAge = Number(constants.JWT_ACCESS_EXPIRATION) * 60 * 1000;
+  // });
+  // const tokenROptions = produce(cookieOptions, (draft) => {
+  //   draft.maxAge =
+  //     Number(constants.JWT_REFRESH_EXPIRATION) * 24 * 60 * 60 * 1000;
+  // });
   const tokenAOptions = produce(cookieOptions, (draft) => {
-    draft.maxAge = Number(constants.JWT_ACCESS_EXPIRATION) * 60 * 1000;
+    draft.maxAge = Number(constants.JWT_ACCESS_EXPIRATION) * 1000;
   });
   const tokenROptions = produce(cookieOptions, (draft) => {
-    draft.maxAge =
-      Number(constants.JWT_REFRESH_EXPIRATION) * 24 * 60 * 60 * 1000;
+    draft.maxAge = Number(constants.JWT_REFRESH_EXPIRATION) * 60 * 1000;
   });
 
   return [
