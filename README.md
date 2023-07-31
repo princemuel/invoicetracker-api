@@ -76,7 +76,7 @@ See the section about [deployment](./docs/deployment.md) for more information.
 - [Express](https://expressjs.com/en/starter/installing.html) - A Fast, unopinionated, minimalist web framework for Node.js
 - [Graphql](https://graphql.org/learn/) - A server-side runtime for executing queries using a type system you define for your data
 - [Apollo Server 4](https://www.apollographql.com/docs/apollo-server) - An open-source, spec-compliant GraphQL server that's compatible with any GraphQL client, including Apollo Client
-- [Nexus](https://nexusjs.org/docs/) - A robust and composable type definition for GraphQL in TypeScript/JavaScript
+- [GraphQL Nexus](https://nexusjs.org/docs/) - A robust, composable, and declarative, code-first schemas for GraphQL in TypeScript/JavaScript
 - [Prisma](https://www.prisma.io/docs/guides) - A Next-generation Node.js and TypeScript ORM
 - [MongoDB](https://www.mongodb.com/) - A NoSQL Database program
 - [Typescript](https://www.typescriptlang.org/docs/) - A strongly typed programming language that builds on JavaScript, giving you better tooling at any scale
