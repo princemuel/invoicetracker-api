@@ -34,7 +34,7 @@ export const getAuthUser = async (req: ExpressRequest) => {
     },
   });
   if (!user) {
-    throw new GraphQLError(MESSAGES.SESSION_EXPIRED, {
+    throw new GraphQLError(MESSAGES.SESSION_INVALID_USER, {
       extensions: {
         code: 'FORBIDDEN',
         http: { status: 403 },

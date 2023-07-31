@@ -38,7 +38,7 @@ export const refresh = queryField('refresh', {
     });
     //  if (!user || !user.verified) {
     if (!user)
-      throw new GraphQLError(MESSAGES.INPUT_INVALID_EMAIL, {
+      throw new GraphQLError(MESSAGES.SESSION_INVALID_USER, {
         extensions: {
           code: 'FORBIDDEN',
           http: { status: 403 },
