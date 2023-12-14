@@ -1,9 +1,16 @@
 {
-  "tabWidth": 2,
   "printWidth": 80,
-  "singleQuote": true,
-  "trailingComma": "es5",
-  "arrowParens": "always",
+  "tabWidth": 2,
+  "useTabs": false,
   "semi": true,
-  "endOfLine": "lf"
+  "singleQuote": true,
+  "trailingComma": "all",
+
+  "requirePragma": false,
+  "embeddedLanguageFormatting": "auto",
+  "endOfLine": "lf",
+
+  "experimentalTernaries": true,
+
+  "plugins": ["prettier-plugin-prisma"]
 }
