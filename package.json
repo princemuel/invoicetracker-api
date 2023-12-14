@@ -1,66 +1,80 @@
 {
-  "name": "invoice-api",
-  "version": "1.0.0",
-  "main": "index.js",
+  "name": "invoicetracker-api",
+  "version": "0.0.1",
+  "description": "",
+  "author": "Prince Muel",
+  "private": true,
   "license": "MIT",
   "scripts": {
-    "dev": "NODE_ENV=development ts-node-dev -r dotenv/config --no-notify --respawn --transpile-only ./src",
-    "start": "ts-node -r dotenv/config --transpile-only ./src",
-    "studio": "pnpm dlx prisma studio",
-    "generate": "pnpm -s run gen:nexus && pnpm -s run gen:prisma",
-    "gen:prisma": "prisma generate",
-    "gen:nexus": "ts-node --transpile-only ./src/lib",
-    "postinstall": "pnpm -s run generate enable-pre-post-scripts"
-  },
-  "devDependencies": {
-    "@types/bcrypt": "^5.0.0",
-    "@types/cookie-parser": "^1.4.3",
-    "@types/cors": "^2.8.13",
-    "@types/express": "^4.17.17",
-    "@types/jsonwebtoken": "^9.0.2",
-    "@types/morgan": "^1.9.4",
-    "@types/node": "^20.4.5",
-    "@types/uuid": "^9.0.2",
-    "@typescript-eslint/eslint-plugin": "^6.0.0",
-    "@typescript-eslint/parser": "^6.2.0",
-    "eslint": "^8.46.0",
-    "eslint-config-prettier": "^8.9.0",
-    "prettier": "^2.8.7",
-    "prettier-plugin-prisma": "^5.0.0",
-    "prisma": "^5.0.0",
-    "ts-node-dev": "^2.0.0",
-    "tsconfig-paths": "^4.2.0",
-    "typescript": "^5.1.6"
+    "build": "nest build",
+    "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
+    "start": "nest start",
+    "start:dev": "nest start --watch",
+    "start:debug": "nest start --debug --watch",
+    "start:prod": "node dist/main",
+    "db:studio": "prisma studio",
+    "db:generate": "prisma generate",
+    "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:cov": "jest --coverage",
+    "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
+    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "prepare": "husky install"
   },
   "dependencies": {
-    "@apollo/server": "^4.9.0",
-    "@prisma/client": "^5.0.0",
-    "bcrypt": "^5.1.0",
-    "body-parser": "^1.20.2",
-    "cookie-parser": "^1.4.6",
-    "cors": "^2.8.5",
-    "date-fns": "^2.30.0",
-    "dotenv": "^16.3.1",
-    "express": "^4.18.2",
-    "express-jwt": "^8.4.1",
-    "graphql": "^16.7.1",
-    "graphql-middleware": "^6.1.34",
-    "graphql-scalars": "^1.22.1",
-    "graphql-shield": "^7.6.5",
-    "immer": "^10.0.2",
-    "jsonwebtoken": "^9.0.1",
-    "morgan": "^1.10.0",
-    "nexus": "^1.3.0",
-    "short-unique-id": "^4.4.4",
-    "ts-node": "^10.9.1",
-    "uuid": "^9.0.0"
+    "@nestjs/common": "^10.0.0",
+    "@nestjs/core": "^10.0.0",
+    "@nestjs/platform-express": "^10.0.0",
+    "@prisma/client": "^5.7.0",
+    "reflect-metadata": "^0.1.13",
+    "rxjs": "^7.8.1"
   },
-  "build": {
-    "files": [
-      {
-        "from": "node_modules/.prisma/client/",
-        "to": "node_modules/.prisma/client/"
-      }
-    ]
+  "devDependencies": {
+    "@nestjs/cli": "^10.0.0",
+    "@nestjs/schematics": "^10.0.0",
+    "@nestjs/testing": "^10.0.0",
+    "@types/express": "^4.17.17",
+    "@types/jest": "^29.5.2",
+    "@types/node": "^20.3.1",
+    "@types/supertest": "^2.0.12",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "eslint": "^8.42.0",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-prettier": "^5.0.0",
+    "husky": "^8.0.3",
+    "jest": "^29.5.0",
+    "lint-staged": "^15.2.0",
+    "prettier": "^3.0.0",
+    "prettier-plugin-prisma": "^5.0.0",
+    "prisma": "^5.7.0",
+    "source-map-support": "^0.5.21",
+    "supertest": "^6.3.3",
+    "ts-jest": "^29.1.0",
+    "ts-loader": "^9.4.3",
+    "ts-node": "^10.9.1",
+    "tsconfig-paths": "^4.2.0",
+    "typescript": "^5.1.3"
+  },
+  "jest": {
+    "moduleFileExtensions": [
+      "js",
+      "json",
+      "ts"
+    ],
+    "rootDir": "src",
+    "testRegex": ".*\\.spec\\.ts$",
+    "transform": {
+      "^.+\\.(t|j)s$": "ts-jest"
+    },
+    "collectCoverageFrom": [
+      "**/*.(t|j)s"
+    ],
+    "coverageDirectory": "../coverage",
+    "testEnvironment": "node"
+  },
+  "lint-staged": {
+    "*.js": "eslint --cache --fix"
   }
 }
